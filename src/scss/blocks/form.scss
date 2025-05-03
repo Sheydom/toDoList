@@ -1,0 +1,75 @@
+@use "../utils/mixins" as *;
+@use "../utils/variables" as *;
+h1{
+    margin: 10px
+}
+
+
+
+
+form{
+    display: flex;
+    animation: grow_form 2s ease-in;
+    flex-direction: column;
+    width: 300px;
+    
+}
+
+.cdiv{
+    display: flex;
+    flex-direction: row;
+    animation: rotat 2s ease-in;
+
+
+    input{
+        background-color:white;
+        opacity: 0.5;
+        width: 60%;
+    }
+}
+
+textarea{
+    text-align: center;
+    resize: none;
+    width: 100%; 
+    display: block;
+    background-color:white;
+    opacity: 0.5;
+    }
+
+.textarea_label{
+    width: 100%;
+}
+
+
+
+     @keyframes grow_form {
+         0%{
+             transform: scale(0.1);
+          
+         }
+         90%{
+            transform: scale(1.2);
+         }
+         100%{
+             transform: scale(1);
+          
+         }
+     }
+     @keyframes rotat {
+         0%{
+          
+             transform: rotate(90deg);
+         }
+         100%{
+          
+             transform: rotate(360deg);
+          
+                 }
+    }
+
+    button:focus,input:focus,textarea:focus{
+        outline: 3px solid $accent3rd;
+        opacity: 1;
+    }
+    

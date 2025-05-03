@@ -1,0 +1,14 @@
+@use "../utils/mixins" as *;
+@use "../utils/variables" as *;
+@use "../blocks/footer.scss" as *;
+@use "../blocks/header" as *;
+
+* {
+  font-family: poppins, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}

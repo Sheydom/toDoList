@@ -1,0 +1,38 @@
+{
+  "name": "filestructure_template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sheydom/Template-respository.git"
+  },
+  "author": "dominic",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Sheydom/Template-respository/issues"
+  },
+  "homepage": "https://github.com/Sheydom/Template-respository#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.23.0",
+    "chai": "^5.2.0",
+    "cypress": "^14.2.1",
+    "eslint": "^9.23.0",
+    "eslint-config-prettier": "^10.1.1",
+    "globals": "^16.0.0",
+    "gulp": "^5.0.0",
+    "gulp-cli": "^3.0.0",
+    "gulp-shell": "^0.8.0",
+    "install": "^0.13.0",
+    "mocha": "^11.1.0",
+    "parcel": "^2.14.4",
+    "prettier": "^3.5.3",
+    "rimraf": "^6.0.1"
+  }
+}
+
+
