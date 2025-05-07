@@ -1,0 +1,41 @@
+<!DOCTYPE >
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta author="Dominic Knabe" description="toDoList - A simple to-do list" />
+    <title>toDoList</title>
+    <link rel="stylesheet" href="/src/scss/base/styles.css" />
+  </head>
+  <body>
+    <main>
+      <section class="status">
+        <div class="status__content">
+          <div class="status__header"><strong>Todo Done</strong> <br>Keep it up</div>
+          <div class="status__counter">1/3</div>
+        </div>
+      </section>
+      <section class="newTask">
+        <div class="addTask">
+          <input
+            type="text"
+            class="addTask__input"
+            placeholder="Add a new task..."
+            name="taskk"
+            id="task"
+          />
+          <button class="addTask__button" id="addTaskButton">+</button>
+        </div>
+      </section>
+      <section class="taskList">
+        <div class="tasklist__task" id="task">
+          <input type="radio" name="task" class="task__checkbox" />
+          <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</p>
+          <i></i>
+          <i></i>
+        </div>
+      </section>
+    </main>
+    <script src="script.js"></script>
+  </body>
+</html>
