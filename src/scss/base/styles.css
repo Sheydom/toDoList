@@ -54,4 +54,28 @@ main {
   color: white;
   border-radius: 45px;
   width: 2.5rem;
+  margin-left: 0.7rem;
+}
+
+.tasklist {
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+  width: 100%;
+  gap: 10px;
+}
+.tasklist__task {
+  display: flex;
+  border: solid 5px black;
+  align-items: start;
+  background-color: #2e345c;
+  padding: 10px;
+  padding-right: 35px;
+  border-radius: 15px;
+  overflow: hidden;
+}
+.tasklist__task p {
+  word-wrap: break-word;
+  max-width: 100%;
+  margin-left: 0.7rem;
 }
