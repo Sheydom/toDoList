@@ -11,6 +11,8 @@ html {
 body {
   display: flex;
   justify-content: center;
+  background-color: #7c8afc;
+  padding-top: 20px;
 }
 
 main {
@@ -19,6 +21,7 @@ main {
   background-color: #090c35;
   color: white;
   max-width: 500px;
+  max-height: fit-content;
   padding: 25px;
   border-radius: 10px;
 }
@@ -43,6 +46,7 @@ main {
   margin-top: 15px;
   display: flex;
   width: 100%;
+  margin-bottom: 100px;
 }
 .addTask__input {
   flex: 1;
@@ -55,6 +59,7 @@ main {
   border-radius: 45px;
   width: 2.5rem;
   margin-left: 0.7rem;
+  cursor: pointer;
 }
 
 .tasklist {
@@ -65,12 +70,14 @@ main {
   gap: 10px;
 }
 .tasklist__task {
+  position: relative;
   display: flex;
+  align-items: center;
   border: solid 5px black;
   align-items: start;
   background-color: #2e345c;
   padding: 10px;
-  padding-right: 35px;
+  padding-right: 40px;
   border-radius: 15px;
   overflow: hidden;
 }
@@ -78,4 +85,17 @@ main {
   word-wrap: break-word;
   max-width: 100%;
   margin-left: 0.7rem;
+}
+.tasklist__delete {
+  color: red;
+  cursor: pointer;
+}
+.tasklist__edit {
+  position: absolute;
+  right: 5px;
+  color: #7c8afc;
+  cursor: pointer;
+}
+.tasklist__checkbox {
+  cursor: pointer;
 }

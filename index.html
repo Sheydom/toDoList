@@ -1,4 +1,4 @@
-<!DOCTYPE >
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -6,12 +6,18 @@
     <meta author="Dominic Knabe" description="toDoList - A simple to-do list" />
     <title>toDoList</title>
     <link rel="stylesheet" href="/src/scss/base/styles.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <main>
       <section class="status">
         <div class="status__content">
-          <div class="status__header"><strong>Todo Done</strong> <br>Keep it up</div>
+          <div class="status__header">
+            <strong>Todo Done</strong> <br />Keep it up
+          </div>
           <div class="status__counter">1/3</div>
         </div>
       </section>
@@ -29,19 +35,31 @@
       </section>
       <section class="taskList">
         <div class="tasklist__task" id="task">
-          <input type="radio" name="task" class="task__checkbox" />
-          <p> test einwas twei wasd wasd wasd wasd wasd wasdwasd wasd wadswasdwaswasdwa ssssssssssdwasdwasdwasdwasssssssssssssssssssssssssssssdwasdwasd</p>
-          <i></i>
-          <i></i>
+          <input type="checkbox" name="task" class="tasklist__checkbox" />
+          <p>
+            test einwas twei wasd wasdsssss wasd wasd wasd wasdwasd wasd
+            wadswasdwaswasdwassssss
+            ssssssssssdwasdwasdwasdwasssssssssssssssssssssssssssssdwasdwasd
+          </p>
+          <span class="tasklist__edit"><i class="ri-edit-2-line"></i></span>
+
+          <span class="tasklist__delete">
+            <i class="ri-delete-bin-6-line"></i
+          ></span>
         </div>
         <div class="tasklist__task" id="task">
-          <input type="radio" name="task" class="task__checkbox" />
-          <p> test einwas twei wasd wasd wasd wasd wasd wasdwasd wasd wasdwasdwasdwawasdwasdwasdwasdwadswasdwasdwasdwasd</p>
-          <i></i>
-          <i></i>
+          <input type="checkbox" name="task" class="tasklist__checkbox" />
+          <p>
+            test einwas tweikkkkkkkkkkkkkkkkkkkkkkkkkk wasd wasd wasd wasdwasd
+            wasd wasdwasdwasdwawasdwasdwasdwasdwadswasdwasdwasdwasd
+          </p>
+          <span class="tasklist__edit"><i class="ri-edit-2-line"></i></span>
+          <span class="tasklist__delete">
+            <i class="ri-delete-bin-6-line"></i
+          ></span>
         </div>
       </section>
     </main>
-    <script src="script.js"></script>
+    <script src="/src/js/script.js"></script>
   </body>
 </html>
