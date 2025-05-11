@@ -20,6 +20,7 @@ body {
 
 main {
   display: flex;
+  // position: relative;
   flex-direction: column;
   background-color: #090c35;
   color: white;
@@ -75,11 +76,17 @@ main {
     position: relative;
     display: flex;
     align-items: center;
+    gap: 15px;
+  }
+  &__all {
+    position: relative;
+    display: flex;
+    justify-content: center;
+
     border: solid 5px black;
     align-items: start;
     background-color: #2e345c;
     padding: 10px;
-    padding-right: 40px;
     border-radius: 15px;
     overflow: hidden;
 
@@ -94,7 +101,6 @@ main {
     cursor: pointer;
   }
   &__edit {
-    position: absolute;
     right: 5px;
     color: #7c8afc;
     cursor: pointer;

@@ -73,15 +73,20 @@ main {
   position: relative;
   display: flex;
   align-items: center;
+  gap: 15px;
+}
+.tasklist__all {
+  position: relative;
+  display: flex;
+  justify-content: center;
   border: solid 5px black;
   align-items: start;
   background-color: #2e345c;
   padding: 10px;
-  padding-right: 40px;
   border-radius: 15px;
   overflow: hidden;
 }
-.tasklist__task p {
+.tasklist__all p {
   word-wrap: break-word;
   max-width: 100%;
   margin-left: 0.7rem;
@@ -91,7 +96,6 @@ main {
   cursor: pointer;
 }
 .tasklist__edit {
-  position: absolute;
   right: 5px;
   color: #7c8afc;
   cursor: pointer;
