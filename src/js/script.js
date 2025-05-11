@@ -4,6 +4,7 @@ const taskList = document.querySelector(".taskList");
 
 document.addEventListener("DOMContentLoaded", loadTasks);
 
+// function to add tasks
 function addTask() {
   const taskText = taskInput.value.trim();
   if (taskText === "") {
@@ -26,6 +27,7 @@ function addTask() {
   return newTask;
 }
 
+// Eventlistener to add task to the tasklist
 addButton.addEventListener("click", addTask);
 taskInput.addEventListener("keypress", (event) => {
   if (event.key === "Enter" && taskInput.value.trim() !== "") {
@@ -35,19 +37,24 @@ taskInput.addEventListener("keypress", (event) => {
   }
 });
 
+//event listener to delete Tasks from tasklist
 taskList.addEventListener("click", (event) => {
   if (event.target.closest(".tasklist__delete")) {
     const task = event.target.closest(".tasklist__task");
+    const taskText = task.querySelector("p").textContent;
+    deleteTask(taskText);
     task.remove();
   }
 });
 
+//function to save tasks to localstorage
 function saveTaskToLocalStorage(taskText) {
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   tasks.push(taskText);
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
+// function to load tasks from localstorage
 function loadTasks() {
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   tasks.forEach((taskText) => {
@@ -63,4 +70,15 @@ function loadTasks() {
     `;
     taskList.appendChild(newTask);
   });
+}
+
+function clearAllTasks() {
+  localStorage.removeItem("tasks");
+  taskList.innerHTML = "";
+}
+
+function deleteTask(taskText) {
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  tasks = tasks.filter((task) => task !== taskText);
+  localStorage.setItem("tasks", JSON.stringify(tasks));
 }
