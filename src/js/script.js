@@ -82,3 +82,8 @@ function deleteTask(taskText) {
   tasks = tasks.filter((task) => task !== taskText);
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
+
+//create clear all tasks button
+//update function in case you have two of the same tasks to it will be only one deleted not all at once when clickign on one to be deleted
+//update counter and counting bar
+//create modify task button and function
