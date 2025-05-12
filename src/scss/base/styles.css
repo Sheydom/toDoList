@@ -62,6 +62,15 @@ main {
   cursor: pointer;
 }
 
+.clearAll__button {
+  background-color: red;
+  color: white;
+  border-radius: 45px;
+  width: 2.5rem;
+  margin-left: 0.7rem;
+  cursor: pointer;
+}
+
 .tasklist {
   display: flex;
   flex-direction: column;
