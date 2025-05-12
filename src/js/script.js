@@ -2,8 +2,21 @@ const addButton = document.querySelector(".addTask__button");
 const taskInput = document.querySelector(".addTask__input");
 const taskList = document.querySelector(".taskList");
 const clearAllButton = document.querySelector(".clearAll__button");
+const statusCounter = document.querySelector(".status__counter");
 
-document.addEventListener("DOMContentLoaded", loadTasks);
+// checkCounter.addEventListener("click", () => {
+//   if(checkCounter.checked){
+//     console.log("it is checked");
+//   } else{
+//     console.log("it is not checked");
+//   }
+
+// });
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadTasks();
+  counterTasks();
+});
 
 // function to add tasks
 function addTask() {
@@ -25,6 +38,7 @@ function addTask() {
   taskList.appendChild(newTask);
   saveTaskToLocalStorage(taskText);
   taskInput.value = "";
+  counterTasks();
   return newTask;
 }
 
@@ -45,6 +59,7 @@ taskList.addEventListener("click", (event) => {
     const taskText = task.querySelector("p").textContent;
     deleteTask(taskText);
     task.remove();
+    counterTasks();
   }
 });
 
@@ -76,18 +91,39 @@ function loadTasks() {
 function clearAllTasks() {
   localStorage.removeItem("tasks");
   taskList.innerHTML = "";
+  counterTasks();
 }
 
 clearAllButton.addEventListener("click", () => {
   clearAllTasks();
+  counterTasks();
 });
 
 function deleteTask(taskText) {
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  tasks = tasks.filter((task) => task !== taskText);
+  const taskIndex = tasks.findIndex((task) => task === taskText);
+
+  if (taskIndex !== -1) {
+    tasks.splice(taskIndex, 1);
+  }
   localStorage.setItem("tasks", JSON.stringify(tasks));
+  counterTasks();
 }
 
-//update function in case you have two of the same tasks to it will be only one deleted not all at once when clickign on one to be deleted
-//update counter and counting bar
+function counterTasks() {
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  const counter = tasks.length;
+  const checkCounter = document.querySelectorAll(".tasklist__checkbox");
+  checkCounter.forEach((checkbox) => {
+    checkbox.addEventListener("click", counterTasks);
+  });
+
+  const checkedTasks = Array.from(checkCounter).filter(
+    (checkbox) => checkbox.checked
+  ).length;
+  statusCounter.innerText = `${checkedTasks}/${counter}`;
+}
+
+// update checked function to save to localstorage checked boxes
+//update  counting bar and checked tasks
 //create modify task button and function
