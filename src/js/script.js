@@ -3,15 +3,7 @@ const taskInput = document.querySelector(".addTask__input");
 const taskList = document.querySelector(".taskList");
 const clearAllButton = document.querySelector(".clearAll__button");
 const statusCounter = document.querySelector(".status__counter");
-
-// checkCounter.addEventListener("click", () => {
-//   if(checkCounter.checked){
-//     console.log("it is checked");
-//   } else{
-//     console.log("it is not checked");
-//   }
-
-// });
+// const textElement = document.querySelectorAll("p");
 
 document.addEventListener("DOMContentLoaded", () => {
   loadTasks();
@@ -63,23 +55,43 @@ taskList.addEventListener("click", (event) => {
   }
 });
 
-//function to save tasks to localstorage
+//f save tasks to localstorage
 function saveTaskToLocalStorage(taskText) {
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  tasks.push(taskText);
+  tasks.push({ text: taskText, checked: false });
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
+
+// update checked status
+function updateCheckedStatus(taskText, isChecked) {
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  const taskIndex = tasks.findIndex((task) => task.text === taskText);
+  if (taskIndex !== -1) {
+    tasks[taskIndex].checked = isChecked;
+  }
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+//tasklist eventlistener for change of checkbox
+taskList.addEventListener("change", (event) => {
+  if (event.target.classList.contains("tasklist__checkbox")) {
+    const task = event.target.closest(".tasklist__task");
+    const taskText = task.querySelector("p").textContent;
+    updateCheckedStatus(taskText, event.target.checked);
+    counterTasks();
+  }
+});
 
 // function to load tasks from localstorage
 function loadTasks() {
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  tasks.forEach((taskText) => {
+  tasks.forEach((task) => {
     const newTask = document.createElement("div");
     newTask.classList.add("tasklist__task");
     newTask.innerHTML = `
   <div class="tasklist__all">
-  <input type="checkbox" name="task" class="tasklist__checkbox" />
-    <p>${taskText}</p>
+  <input type="checkbox" name="task" class="tasklist__checkbox" ${task.checked ? "checked" : ""} />
+    <p>${task.text}</p>
     <span class="tasklist__edit"><i class="ri-edit-2-line"></i></span></div>
          <div class="delete">     <span class="tasklist__delete"> <i class="ri-delete-bin-6-line"></i></span></div>
 
@@ -87,7 +99,7 @@ function loadTasks() {
     taskList.appendChild(newTask);
   });
 }
-
+// clear all tasks function
 function clearAllTasks() {
   localStorage.removeItem("tasks");
   taskList.innerHTML = "";
@@ -99,9 +111,10 @@ clearAllButton.addEventListener("click", () => {
   counterTasks();
 });
 
+//delete function to remove task from localstorage
 function deleteTask(taskText) {
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  const taskIndex = tasks.findIndex((task) => task === taskText);
+  const taskIndex = tasks.findIndex((task) => task.text === taskText);
 
   if (taskIndex !== -1) {
     tasks.splice(taskIndex, 1);
@@ -110,6 +123,7 @@ function deleteTask(taskText) {
   counterTasks();
 }
 
+// function to count tasks
 function counterTasks() {
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   const counter = tasks.length;
@@ -124,6 +138,7 @@ function counterTasks() {
   statusCounter.innerText = `${checkedTasks}/${counter}`;
 }
 
-// update checked function to save to localstorage checked boxes
-//update  counting bar and checked tasks
 //create modify task button and function
+// script with gulp and test with cypress chai&mocha
+//e2e test with cypress
+// test suite with mocha and chai
