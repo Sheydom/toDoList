@@ -3,7 +3,6 @@ const taskInput = document.querySelector(".addTask__input");
 const taskList = document.querySelector(".taskList");
 const clearAllButton = document.querySelector(".clearAll__button");
 const statusCounter = document.querySelector(".status__counter");
-// const textElement = document.querySelectorAll("p");
 
 document.addEventListener("DOMContentLoaded", () => {
   loadTasks();
@@ -44,6 +43,35 @@ taskInput.addEventListener("keypress", (event) => {
   }
 });
 
+//event listener to edit task
+taskList.addEventListener("click", (event) => {
+  if (event.target.closest(".tasklist__edit")) {
+    const task = event.target.closest(".tasklist__task");
+    const taskText = task.querySelector("p").textContent;
+
+    //create input field to edit task
+    const editInputField = document.createElement("input");
+    editInputField.type = "text";
+    editInputField.value = taskText;
+    editInputField.classList.add("edit__input");
+    const paragraph = task.querySelector("p");
+    paragraph.replaceWith(editInputField);
+    editInputField.focus();
+  }
+});
+
+//delete function to remove task from localstorage
+function deleteTask(taskText) {
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  const taskIndex = tasks.findIndex((task) => task.text === taskText);
+
+  if (taskIndex !== -1) {
+    tasks.splice(taskIndex, 1);
+  }
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+  counterTasks();
+}
+
 //event listener to delete Tasks from tasklist
 taskList.addEventListener("click", (event) => {
   if (event.target.closest(".tasklist__delete")) {
@@ -55,7 +83,7 @@ taskList.addEventListener("click", (event) => {
   }
 });
 
-//f save tasks to localstorage
+// save tasks to localstorage
 function saveTaskToLocalStorage(taskText) {
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   tasks.push({ text: taskText, checked: false });
@@ -111,18 +139,6 @@ clearAllButton.addEventListener("click", () => {
   counterTasks();
 });
 
-//delete function to remove task from localstorage
-function deleteTask(taskText) {
-  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  const taskIndex = tasks.findIndex((task) => task.text === taskText);
-
-  if (taskIndex !== -1) {
-    tasks.splice(taskIndex, 1);
-  }
-  localStorage.setItem("tasks", JSON.stringify(tasks));
-  counterTasks();
-}
-
 // function to count tasks
 function counterTasks() {
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -137,6 +153,10 @@ function counterTasks() {
   ).length;
   statusCounter.innerText = `${checkedTasks}/${counter}`;
 }
+
+
+// still working on edit button 
+
 
 //create modify task button and function
 // script with gulp and test with cypress chai&mocha
