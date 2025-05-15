@@ -30,7 +30,7 @@ function addTask() {
   saveTaskToLocalStorage(taskText);
   taskInput.value = "";
   counterTasks();
-  return newTask;
+  // return newTask;
 }
 
 // Eventlistener to add task to the tasklist
@@ -54,9 +54,31 @@ taskList.addEventListener("click", (event) => {
     editInputField.type = "text";
     editInputField.value = taskText;
     editInputField.classList.add("edit__input");
+
+    // replace p with inputfield
     const paragraph = task.querySelector("p");
+    let tasks = JSON.parse(localStorage.getItem("tasks") || []);
+    const taskIndex = tasks.findIndex(
+      (task) => task.text === paragraph.textContent
+    );
     paragraph.replaceWith(editInputField);
     editInputField.focus();
+    // save edited task when user press enter
+    editInputField.addEventListener("keypress", (event) => {
+      if (event.key === "Enter" && editInputField.value.trim() !== "") {
+        const newTaskText = editInputField.value.trim();
+        paragraph.textContent = newTaskText;
+
+        editInputField.replaceWith(paragraph);
+
+        if (taskIndex !== -1) {
+          tasks[taskIndex].text = paragraph.textContent;
+          localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
+      } else if (event.key === "Enter" && editInputField.value.trim() == "") {
+        editInputField.replaceWith(paragraph);
+      }
+    });
   }
 });
 
@@ -154,11 +176,8 @@ function counterTasks() {
   statusCounter.innerText = `${checkedTasks}/${counter}`;
 }
 
+// save data on actual server
 
-// still working on edit button 
-
-
-//create modify task button and function
 // script with gulp and test with cypress chai&mocha
 //e2e test with cypress
 // test suite with mocha and chai

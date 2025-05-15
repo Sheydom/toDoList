@@ -10,5 +10,5 @@ gulp.task("clean", async () => {
 // clean dist folder before build with parcel
 gulp.task(
   "build",
-  gulp.series("cleanr", shell.task("parcel build index.html "))
+  gulp.series("clean", shell.task("parcel build index.html "))
 );

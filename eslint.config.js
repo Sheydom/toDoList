@@ -17,6 +17,7 @@ export default defineConfig([
       semi: ["error", "always"], // Enforce semicolons
       "no-console": "error", // Disallow `console` statements
       cy: "off", // Turn off Cypress-specific rules
+      require: "off", // turn off webpack specific rules
     },
     plugins: { js },
     extends: ["js/recommended"], // Use recommended JavaScript rules
