@@ -30,7 +30,6 @@ function addTask() {
   saveTaskToLocalStorage(taskText);
   taskInput.value = "";
   counterTasks();
-  // return newTask;
 }
 
 // Eventlistener to add task to the tasklist
@@ -178,6 +177,6 @@ function counterTasks() {
 
 // save data on actual server
 
-// script with gulp and test with cypress chai&mocha
+
 //e2e test with cypress
-// test suite with mocha and chai
+
