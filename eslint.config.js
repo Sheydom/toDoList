@@ -1,6 +1,7 @@
 import { defineConfig } from "eslint/config";
 import globals from "globals";
 import js from "@eslint/js";
+import cypress from "eslint-plugin-cypress";
 
 export default defineConfig([
   {
