@@ -9,7 +9,6 @@ export default defineConfig([
       globals: {
         ...globals.browser, // Include browser globals
         ...globals.mocha, // Include Mocha globals
-        ...globals.cypress,
       },
     },
     rules: {
@@ -19,7 +18,7 @@ export default defineConfig([
       "no-console": "error", // Disallow `console` statements
       require: "off", // turn off webpack specific rules
     },
-    plugins: [js],
-    extends: ["js/recommended"], // Use recommended JavaScript rules
+
+    ...js.configs.recommended,
   },
 ]);
