@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta author="Dominic Knabe" description="toDoList - A simple to-do list" />
+    <meta name="author" content="Dominic Knabe" />
+    <meta name="description" content="toDoList - A simple to-do list" />
     <title>toDoList</title>
-   <base href="/toDoList/">
+    <base href="/toDoList/" />
 
     <link rel="stylesheet" href="src/scss/base/styles.css" />
 
-    
     <link
       href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"
       rel="stylesheet"
@@ -32,20 +32,19 @@
             class="addTask__input"
             placeholder="Add a new task..."
             name="taskk"
-            id="task"
+            id="taskInput"
           />
           <button class="addTask__button" id="addTaskButton">+</button>
           <button class="clearAll__button" id="clearTaskButton">
             clear all
-          </button
+          </button>
         </div>
       </section>
-     
 
       <section class="taskList">
         <div class="tasklist__task" id="task">
           <div class="tasklist__all">
-            <input tpe="checkbox" name="task" class="tasklist__checkbox" />
+            <input type="checkbox" name="task" class="tasklist__checkbox" />
             <p>study all day something</p>
             <span class="tasklist__edit"><i class="ri-edit-2-line"></i></span>
           </div>
@@ -57,8 +56,7 @@
         </div>
       </section>
     </main>
-    <base href="/toDoList/">
-<script src="src/js/script.js"></script>
-
+    <base href="/toDoList/" />
+    <script src="src/js/script.js"></script>
   </body>
 </html>
