@@ -30,12 +30,16 @@ function addTask() {
   const displayDate = new Date(timeStamp).toLocaleDateString();
   newTask.innerHTML = `
   <div class="tasklist__all">
-  <input type="checkbox" name="task" class="tasklist__checkbox" />
+    <input type="checkbox" name="task" class="tasklist__checkbox" />
     <p>${taskText}</p>
-    <span class="tasklist__timestamp">${displayDate}</span>
-    <span class="tasklist__edit"><i class="ri-edit-2-line"></i></span></div>
-         <div class="delete">     <span class="tasklist__delete"> <i class="ri-delete-bin-6-line"></i></span></div>
-
+    <span class="tasklist__edit">
+      <span class="tasklist__timestamp">${displayDate}</span>
+      <i class="ri-edit-2-line"></i>
+    </span>
+  </div>
+  <div class="delete">
+    <span class="tasklist__delete"><i class="ri-delete-bin-6-line"></i></span>
+  </div>
     `;
   taskList.appendChild(newTask);
   saveTaskToLocalStorage(taskText);
@@ -164,7 +168,7 @@ function loadTasks() {
     newTask.classList.add("tasklist__newTask");
     newTask.innerHTML = `
   <div class="tasklist__all">
-  <input type="checkbox" name="task" class="tasklist__checkbox" ${task.checked ? "checked" : ""} />
+    <input type="checkbox" name="task" class="tasklist__checkbox" ${task.checked ? "checked" : ""} />
     <p>${task.text}</p>
     
     <span class="tasklist__edit"><span class="tasklist__timestamp">${displayDate}</span><i class="ri-edit-2-line"></i></span></div>
@@ -227,29 +231,28 @@ function hideExample() {
 }
 
 function warnOldest() {
-  const AllP = document.querySelectorAll("p");
-
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   if (tasks.length > 0) {
-    const oldestTask = tasks.reduce((oldest, current) => {
-      // return new Date(oldest.timestamp) < new Date(current.timestamp)
-      return new Date(oldest.timestamp) < new Date(current.timestamp)
-        ? oldest
-        : current;
-    });
-    console.log(oldestTask.text);
+    // const oldestTask = tasks.reduce((oldest, current) => {
+    //   // return new Date(oldest.timestamp) < new Date(current.timestamp)
+    //   return new Date(oldest.timestamp) < new Date(current.timestamp)
+    //     ? oldest
+    //     : current;
+    // });
+    // console.log(oldestTask.text);
 
-    const arrayFromP = Array.from(AllP);
+    // const arrayFromP = Array.from(AllP);
 
-    console.log(arrayFromP);
-    const oldestTaskIndex = arrayFromP.findIndex(
-      (p) => p.textContent === oldestTask.text
-    );
-    console.log(oldestTaskIndex, "test");
+    // console.log(arrayFromP);
+    // const oldestTaskIndex = arrayFromP.findIndex(
+    //   (p) => p.textContent === oldestTask.text
+    // );
+    // console.log(oldestTaskIndex, "test");
 
-    if (oldestTaskIndex !== -1) {
-      AllP[oldestTaskIndex].classList.add("tasklist__oldestTask");
-    }
+    // if (oldestTaskIndex !== -1) {
+    //   AllP[oldestTaskIndex].classList.add("tasklist__oldestTask");
+    // }
+    // const AllP = document.querySelectorAll(".tasklist__newTask p");
 
     tasks.forEach((task) => {
       const today = new Date();
@@ -259,7 +262,7 @@ function warnOldest() {
       const taskElement = Array.from(document.querySelectorAll("p")).find(
         (p) => task.text === p.textContent
       );
-      if (taskDiffDays > 2) {
+      if (taskDiffTime > 2000) {
         console.log(taskElement, "taskElement");
         if (taskElement) {
           taskElement.classList.add("tasklist__oldestTask");
