@@ -12,9 +12,16 @@ document.addEventListener("DOMContentLoaded", () => {
   loadTasks();
   counterTasks();
   hideExample();
-  warnOldest();
-  // setInterval(warnOldest, 2000); // Check every 2seconds
-  setInterval(warnOldest, 1000 * 60 * 60 * 12); // Check every 12 hours
+
+  // const slider = document.querySelector(".addTask__range");
+  // slider.addEventListener("change", () => {
+  //   const sliderValue = slider.value;
+  //   console.log(sliderValue);
+  //   setInterval(warnOldest, sliderValue*1000); // Check every 2seconds
+  // });
+
+  setInterval(warnOldest, 2000); // Check every 2seconds
+  // setInterval(warnOldest, 1000 * 60 * 60 * 12); // Check every 12 hours
 });
 
 // function to add tasks
@@ -200,6 +207,7 @@ function counterTasks() {
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   const counter = tasks.length;
   const checkCounter = document.querySelectorAll(".tasklist__checkbox");
+  const newtask = document.querySelectorAll(".tasklist__newTask");
 
   checkCounter.forEach((checkbox) => {
     checkbox.addEventListener("click", counterTasks);
@@ -214,9 +222,47 @@ function counterTasks() {
   if (counter == checkedTasks && checkedTasks > 0) {
     statusCounter.classList.add("allChecked");
     main.classList.add("mainChecked");
+
+    newtask.forEach((task) => {
+      const inner = task.querySelector(".tasklist__all");
+      const innerP = task.querySelector("p");
+      inner.classList.remove("tasklist__oldestTask");
+      inner.classList.add("tasklist__checkedTask");
+      innerP.classList.remove("tasklist__oldestTask");
+      innerP.classList.add("tasklist__checked");
+    });
   } else {
     statusCounter.classList.remove("allChecked");
     main.classList.remove("mainChecked");
+    newtask.forEach((task) => {
+      const inner = task.querySelector(".tasklist__all");
+      const innerP = task.querySelector("p");
+      innerP.classList.remove("tasklist__checked");
+      inner.classList.remove("tasklist__checkedTask");
+    });
+  }
+
+  if (checkedTasks > 0) {
+    checkCounter.forEach((checkbox) => {
+      if (checkbox.checked) {
+        const task = checkbox.closest(".tasklist__newTask");
+        const inner = task.querySelector(".tasklist__all");
+        const innerP = task.querySelector("p");
+        inner.classList.remove("tasklist__oldestTask");
+        inner.classList.add("tasklist__checkedTask");
+        innerP.classList.remove("tasklist__oldestTask");
+        innerP.classList.add("tasklist__checked");
+      }
+    });
+  } else {
+    statusCounter.classList.remove("allChecked");
+    main.classList.remove("mainChecked");
+    newtask.forEach((task) => {
+      const inner = task.querySelector(".tasklist__all");
+      const innerP = task.querySelector("p");
+      innerP.classList.remove("tasklist__checked");
+      inner.classList.remove("tasklist__checkedTask");
+    });
   }
 }
 
@@ -233,27 +279,6 @@ function hideExample() {
 function warnOldest() {
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   if (tasks.length > 0) {
-    // const oldestTask = tasks.reduce((oldest, current) => {
-    //   // return new Date(oldest.timestamp) < new Date(current.timestamp)
-    //   return new Date(oldest.timestamp) < new Date(current.timestamp)
-    //     ? oldest
-    //     : current;
-    // });
-    // console.log(oldestTask.text);
-
-    // const arrayFromP = Array.from(AllP);
-
-    // console.log(arrayFromP);
-    // const oldestTaskIndex = arrayFromP.findIndex(
-    //   (p) => p.textContent === oldestTask.text
-    // );
-    // console.log(oldestTaskIndex, "test");
-
-    // if (oldestTaskIndex !== -1) {
-    //   AllP[oldestTaskIndex].classList.add("tasklist__oldestTask");
-    // }
-    // const AllP = document.querySelectorAll(".tasklist__newTask p");
-
     tasks.forEach((task) => {
       const today = new Date();
       const taskDate = new Date(task.timestamp);
@@ -262,18 +287,19 @@ function warnOldest() {
       const taskElement = Array.from(document.querySelectorAll("p")).find(
         (p) => task.text === p.textContent
       );
-      if (taskDiffTime > 2000) {
-        console.log(taskElement, "taskElement");
+      if (taskDiffTime > 5000) {
         if (taskElement) {
           taskElement.classList.add("tasklist__oldestTask");
+          taskElement
+            .closest(".tasklist__all")
+            .classList.add("tasklist__oldestTask");
         }
       } else {
         taskElement.classList.remove("tasklist__oldestTask");
+        taskElement
+          .closest(".tasklist__all")
+          .classList.remove("tasklist__oldestTask");
       }
     });
   }
 }
-
-// save data on actual server
-
-//e2e test with cypress

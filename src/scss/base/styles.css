@@ -88,16 +88,6 @@ main {
   width: 100%;
   gap: 10px;
 }
-.tasklist__timestamp {
-  position: relative;
-  font-size: 0.6rem !important;
-  margin-left: 1rem;
-  color: white;
-}
-.tasklist__oldestTask {
-  color: red;
-  font-weight: bold;
-}
 .tasklist__task {
   display: none;
   position: relative;
@@ -116,7 +106,7 @@ main {
   position: relative;
   display: flex;
   justify-content: center;
-  border: solid 5px black;
+  border: solid 2px black;
   align-items: start;
   background-color: #2e345c;
   padding: 10px;
@@ -139,6 +129,25 @@ main {
 }
 .tasklist__checkbox {
   cursor: pointer;
+}
+.tasklist__timestamp {
+  position: relative;
+  font-size: 0.6rem !important;
+  margin-left: 1rem;
+  color: white;
+}
+.tasklist__oldestTask {
+  color: red;
+  border-color: red;
+  border-width: 2px;
+}
+.tasklist__checkedTask {
+  border-color: green !important;
+  border-width: 2px;
+  color: white !important;
+}
+.tasklist__checked {
+  color: white !important;
 }
 
 .show {
