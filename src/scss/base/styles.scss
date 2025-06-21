@@ -2,7 +2,7 @@
 @use "../utils/variables" as *;
 
 * {
-  font-family: poppins, sans-serif;
+  font-family: roboto, sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -42,8 +42,20 @@ main {
     background-color: #7c8afc;
     border-radius: 45px;
     border: #7c8afc solid 30px;
-    font-size: 1.5rem;
+    font-size: 2rem;
   }
+}
+
+.allChecked {
+  border-color: rgb(4, 241, 103) !important;
+  background-color: rgb(4, 241, 103) !important;
+  // color: rgb(4, 241, 103) !important;
+
+  font-weight: 600;
+}
+
+.mainChecked {
+  box-shadow: 10px 10px 20px rgb(4, 241, 103);
 }
 
 .addTask {
@@ -75,15 +87,38 @@ main {
   cursor: pointer;
 }
 
+//
 .tasklist {
   display: flex;
   flex-direction: column;
   margin-top: 15px;
   width: 100%;
   gap: 10px;
-  &__task {
+
+  &__timestamp {
     position: relative;
+    // top: 10px;
+    // right: -15px;
+    font-size: 0.6rem !important;
+    margin-left: 1rem;
+    color: white;
+  }
+  &__oldestTask {
+    color: red;
+    font-weight: bold;
+  }
+
+  &__task {
+    display: none;
+    position: relative;
+    align-items: center;
+    gap: 15px;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  &__newTask {
     display: flex;
+    position: relative;
     align-items: center;
     gap: 15px;
   }
@@ -117,4 +152,8 @@ main {
   &__checkbox {
     cursor: pointer;
   }
+}
+
+.show {
+  display: flex;
 }
