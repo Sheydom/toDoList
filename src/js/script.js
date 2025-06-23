@@ -20,8 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
   //   setInterval(warnOldest, sliderValue*1000); // Check every 2seconds
   // });
 
-  setInterval(warnOldest, 2000); // Check every 2seconds
-  // setInterval(warnOldest, 1000 * 60 * 60 * 12); // Check every 12 hours
+  // setInterval(warnOldest, 2000); // Check every 2seconds
+  setInterval(warnOldest, 1000 * 60 * 60 * 12); // Check every 12 hours
 });
 
 // function to add tasks
@@ -287,7 +287,7 @@ function warnOldest() {
       const taskElement = Array.from(document.querySelectorAll("p")).find(
         (p) => task.text === p.textContent
       );
-      if (taskDiffTime > 5000) {
+      if (taskDiffDays > 12) {
         if (taskElement) {
           taskElement.classList.add("tasklist__oldestTask");
           taskElement
