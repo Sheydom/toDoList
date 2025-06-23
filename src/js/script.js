@@ -155,7 +155,7 @@ function updateCheckedStatus(taskText, isChecked) {
 
 //tasklist eventlistener for change of checkbox
 taskList.addEventListener("change", (event) => {
-  if (event.target.classList.contains("tasklist__newTask")) {
+  if (event.target.classList.contains("tasklist__checkbox")) {
     const task = event.target.closest(".tasklist__newTask");
     const taskText = task.querySelector("p").textContent;
     updateCheckedStatus(taskText, event.target.checked);
@@ -287,7 +287,7 @@ function warnOldest() {
       const taskElement = Array.from(document.querySelectorAll("p")).find(
         (p) => task.text === p.textContent
       );
-      if (taskDiffDays > 12) {
+      if (taskDiffDays > 1) {
         if (taskElement) {
           taskElement.classList.add("tasklist__oldestTask");
           taskElement
