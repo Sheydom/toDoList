@@ -1,4 +1,6 @@
 // const { task } = require("gulp");
+import "../scss/base/styles.css"; // or .scss
+
 const main = document.querySelector("main");
 const addButton = document.querySelector(".addTask__button");
 const taskInput = document.querySelector(".addTask__input");

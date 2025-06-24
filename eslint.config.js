@@ -1,24 +1,27 @@
 import { defineConfig } from "eslint/config";
-import globals from "globals";
 import js from "@eslint/js";
+import globals from "globals";
 
 export default defineConfig([
   {
+    ignores: ["dist/**", "node_modules/**"],
     files: ["**/*.{js,mjs,cjs}"],
     languageOptions: {
+      sourceType: "module",
+      ecmaVersion: "latest",
       globals: {
-        ...globals.browser, // Include browser globals
-        ...globals.mocha, // Include Mocha globals
+        ...globals.browser,
+        ...globals.node,
+        ...globals.mocha,
       },
-    },
-    rules: {
-      "no-var": "error", // Disallow the use of `var`
-      "no-unused-vars": "error", // Disallow unused variables
-      semi: ["error", "always"], // Enforce semicolons
-      "no-console": "error", // Disallow `console` statements
-      require: "off", // turn off webpack specific rules
     },
 
     ...js.configs.recommended,
+    rules: {
+      "no-var": "error",
+      "no-unused-vars": "error",
+      semi: ["error", "always"],
+      "no-console": "warn",
+    },
   },
 ]);
