@@ -46,6 +46,13 @@ main {
   }
 }
 
+.reminderSlider {
+  margin-top: 20px;
+  margin-right: 20px;
+  &__sliderInput {
+    cursor: pointer;
+  }
+}
 .allChecked {
   border-color: rgb(4, 241, 103) !important;
   background-color: rgb(4, 241, 103) !important;

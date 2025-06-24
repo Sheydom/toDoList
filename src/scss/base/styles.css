@@ -42,6 +42,14 @@ main {
   font-size: 2rem;
 }
 
+.reminderSlider {
+  margin-top: 20px;
+  margin-right: 20px;
+}
+.reminderSlider__sliderInput {
+  cursor: pointer;
+}
+
 .allChecked {
   border-color: rgb(4, 241, 103) !important;
   background-color: rgb(4, 241, 103) !important;

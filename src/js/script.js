@@ -7,22 +7,41 @@ const taskList = document.querySelector(".tasklist");
 const clearAllButton = document.querySelector(".clearAll__button");
 const statusCounter = document.querySelector(".status__counter");
 const example = document.querySelector(".tasklist__task");
+const slider = document.querySelector(".reminderSlider__sliderInput");
+const rangeValue = document.querySelector(".rangeValue");
+let sliderValue = slider.value;
 
 document.addEventListener("DOMContentLoaded", () => {
   loadTasks();
   counterTasks();
   hideExample();
-
-  // const slider = document.querySelector(".addTask__range");
-  // slider.addEventListener("change", () => {
-  //   const sliderValue = slider.value;
-  //   console.log(sliderValue);
-  //   setInterval(warnOldest, sliderValue*1000); // Check every 2seconds
-  // });
-
-  // setInterval(warnOldest, 2000); // Check every 2seconds
+  loadRangeValue();
+  console.log("slidervalue", sliderValue);
+  warnOldest();
+  // setInterval(warnOldest, 1000); // test slider value in seconds
   setInterval(warnOldest, 1000 * 60 * 60 * 12); // Check every 12 hours
 });
+
+slider.addEventListener("input", () => {
+  sliderValue = slider.value;
+  rangeValue.innerText = ` in ${sliderValue} days`;
+  saveRangeValue(sliderValue);
+  warnOldest();
+});
+
+function saveRangeValue(sliderValue) {
+  localStorage.setItem("sliderValue", sliderValue);
+}
+
+function loadRangeValue() {
+  const savedValue = localStorage.getItem("sliderValue");
+
+  if (savedValue) {
+    slider.value = savedValue;
+    rangeValue.innerText = `in ${savedValue} days`;
+    sliderValue = parseInt(savedValue, 10);
+  }
+}
 
 // function to add tasks
 function addTask() {
@@ -283,11 +302,13 @@ function warnOldest() {
       const today = new Date();
       const taskDate = new Date(task.timestamp);
       const taskDiffTime = Math.abs(today - taskDate);
-      const taskDiffDays = Math.ceil(taskDiffTime / (1000 * 60 * 60 * 24));
+      const taskDiffDays = Math.floor(taskDiffTime / (1000 * 60 * 60 * 24)); //floor better than ceil because it rounds up i needs to be a full day 4,1 = 4 and not 5
+      console.log("taskDiffDays", taskDiffDays);
+      console.log("sliderValue", sliderValue);
       const taskElement = Array.from(document.querySelectorAll("p")).find(
         (p) => task.text === p.textContent
       );
-      if (taskDiffDays > 1) {
+      if (taskDiffDays >= sliderValue) {
         if (taskElement) {
           taskElement.classList.add("tasklist__oldestTask");
           taskElement

@@ -22,8 +22,14 @@
       <div class="status__content">
         <div class="status__header">
           <strong>Todo-List</strong> <br />Keep it up
+          <div class="reminderSlider">
+            <p class="reminderText">Set your reminder</p>
+            <input type="range" name="slider" class="reminderSlider__sliderInput" id="rangeInput" min="1" max="10" />
+            <p class="rangeValue"></p>
+          </div>
         </div>
         <div class="status__counter"></div>
+
       </div>
     </section>
     <section class="newTask">
@@ -33,7 +39,7 @@
         <button class="clearAll__button" id="clearTaskButton">
           clear all
         </button>
-        <input type="range" name="slider" class="addTask__range" id="rangeInput" min="1" max="10" value="5" />
+
       </div>
 
     </section>
