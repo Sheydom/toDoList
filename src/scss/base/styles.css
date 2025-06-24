@@ -24,6 +24,7 @@ main {
   max-height: fit-content;
   padding: 25px;
   border-radius: 10px;
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
 }
 
 .status {
@@ -36,6 +37,8 @@ main {
   justify-content: space-around;
 }
 .status__counter {
+  display: flex;
+  align-items: center;
   background-color: #7c8afc;
   border-radius: 45px;
   border: #7c8afc solid 30px;
