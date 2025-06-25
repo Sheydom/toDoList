@@ -1,5 +1,5 @@
 // const { task } = require("gulp");
-import "../scss/base/styles.css"; // or .scss
+// import "../scss/base/styles.css"; // or .scss for webpack
 
 const main = document.querySelector("main");
 const addButton = document.querySelector(".addTask__button");
@@ -26,7 +26,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 slider.addEventListener("input", () => {
   sliderValue = slider.value;
-  rangeValue.innerText = ` in ${sliderValue} days`;
+  rangeValue.innerText =
+    sliderValue > 1 ? `in ${sliderValue} days` : `in ${sliderValue} day`;
   saveRangeValue(sliderValue);
   warnOldest();
 });
@@ -40,7 +41,9 @@ function loadRangeValue() {
 
   if (savedValue) {
     slider.value = savedValue;
-    rangeValue.innerText = `in ${savedValue} days`;
+    rangeValue.innerText =
+      savedValue > 1 ? `in ${savedValue} days` : `in ${savedValue} day`;
+    // rangeValue.innerText = `in ${savedValue} days`;
     sliderValue = parseInt(savedValue, 10);
   }
 }
@@ -60,14 +63,9 @@ function addTask() {
   <div class="tasklist__all">
     <input type="checkbox" name="task" class="tasklist__checkbox" />
     <p>${taskText}</p>
-    <span class="tasklist__edit">
-      <span class="tasklist__timestamp">${displayDate}</span>
-      <i class="ri-edit-2-line"></i>
-    </span>
-  </div>
-  <div class="delete">
-    <span class="tasklist__delete"><i class="ri-delete-bin-6-line"></i></span>
-  </div>
+    
+   <span ><span class="tasklist__timestamp">${displayDate}</span><i class="ri-edit-2-line tasklist__edit"></i></span></div>
+         <div class="delete">     <span class="tasklist__delete"> <i class="ri-delete-bin-6-line "></i></span></div>
     `;
   taskList.appendChild(newTask);
   saveTaskToLocalStorage(taskText);
@@ -199,8 +197,8 @@ function loadTasks() {
     <input type="checkbox" name="task" class="tasklist__checkbox" ${task.checked ? "checked" : ""} />
     <p>${task.text}</p>
     
-    <span class="tasklist__edit"><span class="tasklist__timestamp">${displayDate}</span><i class="ri-edit-2-line"></i></span></div>
-         <div class="delete">     <span class="tasklist__delete"> <i class="ri-delete-bin-6-line"></i></span></div>
+    <span ><span class="tasklist__timestamp">${displayDate}</span><i class="ri-edit-2-line tasklist__edit"></i></span></div>
+         <div class="delete">     <span class="tasklist__delete"> <i class="ri-delete-bin-6-line "></i></span></div>
          
 
     `;
