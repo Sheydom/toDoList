@@ -179,6 +179,7 @@ taskList.addEventListener("change", (event) => {
     const taskText = task.querySelector("p").textContent;
     updateCheckedStatus(taskText, event.target.checked);
     counterTasks();
+    warnOldest();
   }
 });
 
