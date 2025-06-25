@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="Dominic Knabe" />
+  <meta name="description" content="toDoList - A simple to-do list" />
+  <title>toDoList</title>
+  <!-- <base href="/toDoList/" /> -->
+
+  <!-- <link rel="stylesheet" href="src/scss/base/styles.css" /> -->
+  <link rel="stylesheet" href="dist/styles.css" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+
+  <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet" />
+</head>
+
+<body>
+  <main>
+    <section class="status">
+      <div class="status__content">
+        <div class="status__header">
+          <strong>Todo-List</strong> <br />Keep it up
+          <div class="reminderSlider">
+            <p class="reminderText">Set your reminder</p>
+            <input type="range" name="slider" class="reminderSlider__sliderInput" id="rangeInput" min="1" max="10" />
+            <p class="rangeValue"></p>
+          </div>
+        </div>
+        <p class="status__counter"></p>
+
+      </div>
+    </section>
+    <section class="newTask">
+      <div class="addTask">
+        <input type="text" class="addTask__input" placeholder="Please enter a Task..." name="taskk" id="taskInput" />
+        <button class="addTask__button" id="addTaskButton">+</button>
+        <button class="clearAll__button" id="clearTaskButton">
+          clear all
+        </button>
+
+      </div>
+
+    </section>
+
+
+    </section>
+    <section class="tasklist  ">
+      <div class="tasklist__task  " id="task">
+        <div class="tasklist__all">
+          <input type="checkbox" name="task" class="tasklist__checkbox" disabled />
+          <p>Example task...</p>
+          <span><i class="ri-edit-2-line tasklist__edit"></i></span>
+        </div>
+        <div class="delete">
+          <span class="tasklist__delete">
+            <i class="ri-delete-bin-6-line"></i></span>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- login modal -->
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <h2>Login</h2>
+        <form id="loginForm">
+          <div class="userDiv">
+            <label for="username">Username:</label>
+            <input type="text" id="username" required>
+          </div>
+          <div class="emailDiv">
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+          </div>
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    </div>
+
+
+
+
+
+  </main>
+  <!-- <base href="/toDoList/" /> -->
+  <!-- <script src="src/js/script.js"></script> -->
+  <script src="dist/main.js"></script>
+</body>
+
+</html>

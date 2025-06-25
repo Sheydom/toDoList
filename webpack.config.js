@@ -3,7 +3,7 @@ import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import CssMinimizerWebpackPlugin from "css-minimizer-webpack-plugin";
 import ImageMinimizerPlugin from "image-minimizer-webpack-plugin";
 import TerserPlugin from "terser-webpack-plugin";
-// import CopyWebpackPlugin from "copy-webpack-plugin";
+import CopyWebpackPlugin from "copy-webpack-plugin";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 
@@ -20,16 +20,15 @@ export default {
     clean: true, // clean dist folder before new build
   },
   plugins: [
-    new MiniCssExtractPlugin( {filename: "styles.css"})
-   
-    //  new CopyWebpackPlugin({
-    //    patterns: [
-    //      {
-    //        from: "./images", // Copy all images from src/images
-    //        to: "images", // Place them in dist/images
-    //      },
-    //    ],
-    //  }),
+    new MiniCssExtractPlugin({ filename: "styles.css" }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: "./index.html",
+          to: "index.html",
+        },
+      ],
+    }),
   ],
 
   optimization: {
