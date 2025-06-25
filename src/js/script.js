@@ -1,5 +1,6 @@
 // const { task } = require("gulp");
 // import "../scss/base/styles.css"; // or .scss for webpack
+import { app } from "./firebase.js"; // Import Firebase app
 
 const main = document.querySelector("main");
 const addButton = document.querySelector(".addTask__button");

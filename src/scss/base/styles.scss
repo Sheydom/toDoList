@@ -175,3 +175,55 @@ main {
 .show {
   display: flex;
 }
+
+// modal css
+.modal {
+  display: flex;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background-color: rgb(101, 185, 241);
+  padding: 2rem;
+  border-radius: 8px;
+  width: 300px;
+}
+
+.modal h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.userDiv,
+.emailDiv {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.5rem;
+}
+
+.modal input {
+  width: 100%;
+
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.modal button {
+  width: 100%;
+  padding: 0.5rem;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
