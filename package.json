@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "test2": "gulp build",
     "test3": "gulp mocha",
-    "server": "webpack serve",
+    "server": "webpack serve --open --mode development --hot",
     "build": "webpack"
   },
   "repository": {
