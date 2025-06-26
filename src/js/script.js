@@ -1,6 +1,8 @@
 // const { task } = require("gulp");
 import "../scss/base/styles.css"; // or .scss for webpack
 import "./firebase.js"; // Import Firebase app
+import { listenToAuthState } from "./auth_user.js";
+import { logout } from "./auth_user.js";
 
 const modal = document.querySelector(".modal");
 const loginButton = document.querySelector(".loginButton");
@@ -12,6 +14,29 @@ const nameDiv = document.querySelector(".nameDiv");
 const message = document.querySelector(".message");
 const messageText = document.querySelector(".messageText");
 const switchCreateButton = document.querySelector(".switchCreateButton");
+const welcome = document.querySelector(".welcome");
+const mainLoading = document.querySelector(".loading");
+const logoutButton = document.querySelector(".logoutButton");
+//sign out function
+logoutButton.addEventListener("click", async () => {
+  try {
+    await logout();
+  } catch (error) {
+    alert("Logout failed: " + error.message);
+  }
+});
+
+// login status check
+listenToAuthState((user) => {
+  if (user) {
+    // ✅ User is logged in
+    modal.classList.add("hidden");
+    mainLoading.classList.remove("loading");
+  } else {
+    // ❌ User is logged out
+    modal.classList.remove("hidden");
+  }
+});
 
 loginButton.addEventListener("click", async (e) => {
   e.preventDefault();
@@ -26,9 +51,11 @@ loginButton.addEventListener("click", async (e) => {
   try {
     const userCredential = await login(email, password);
     const user = userCredential.user;
-    console.log("userCredential", userCredential);
+    message.classList.remove("hidden");
+    message.classList.add("messageGreen");
     messageText.innerText = `Welcome, ${user.displayName}`;
-    setTimeout(() => modal.classList.add("hidden"), 1500);
+    setTimeout(() => modal.classList.add("hidden"), 1000);
+    welcome.innerText = `${user.displayName}'s`;
   } catch (error) {
     // const errorCode = error.code;
     const errorMessage = error.message;
@@ -59,7 +86,9 @@ createButton.addEventListener("click", async () => {
   try {
     const userCredential = await createUser(email, password, name);
     const user = userCredential.user;
+    message.classList.remove("hidden");
     messageText.innerText = `Welcome, ${user.displayName}`;
+    message.classList.add("messageGreen");
     nameDiv.classList.add("hidden");
     loginButton.classList.remove("hidden");
     switchCreateButton.classList.add("hidden");

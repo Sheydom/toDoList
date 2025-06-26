@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkfilestructure_template=self.webpackChunkfilestructure_template||[]).push([[417],{417:(e,t,r)=>{r.d(t,{createUser:()=>s,login:()=>u});var n=r(44);function u(e,t){const r=(0,n.xI)();return(0,n.x9)(r,e,t)}function s(e,t,r){const u=(0,n.xI)();return(0,n.eJ)(u,e,t).then(e=>{const t=e.user;return(0,n.r7)(t,{displayName:r}).then(()=>e)})}}}]);
-//# sourceMappingURL=417.js.map

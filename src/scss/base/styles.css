@@ -243,3 +243,25 @@ main {
   max-width: max-content;
   padding: 10px;
 }
+
+.messageGreen {
+  border: solid green 3px;
+}
+
+.welcome {
+  font-weight: 600;
+}
+
+.loading {
+  visibility: hidden;
+}
+
+.logoutButton {
+  max-width: fit-content;
+  border: solid red 2px;
+  border-radius: 45px;
+  background: #090c35;
+  color: white;
+  padding: 5px;
+  cursor: pointer;
+}

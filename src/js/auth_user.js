@@ -3,6 +3,8 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
 } from "firebase/auth";
 
 //login.js
@@ -26,4 +28,18 @@ export function createUser(email, password, name) {
       });
     }
   );
+}
+
+//check logged in status
+
+export function listenToAuthState(callback) {
+  const auth = getAuth();
+  onAuthStateChanged(auth, callback);
+}
+
+//logout function
+
+export function logout() {
+  const auth = getAuth();
+  return signOut(auth);
 }
