@@ -8,7 +8,7 @@
     "test2": "gulp build",
     "test3": "gulp mocha",
     "server": "webpack serve --open --mode development --hot",
-    "build": "webpack"
+    "build": "webpack --mode production"
   },
   "repository": {
     "type": "git",

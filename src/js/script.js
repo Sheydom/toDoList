@@ -1,6 +1,73 @@
 // const { task } = require("gulp");
 import "../scss/base/styles.css"; // or .scss for webpack
-import { app } from "./firebase.js"; // Import Firebase app
+import "./firebase.js"; // Import Firebase app
+
+const modal = document.querySelector(".modal");
+const loginButton = document.querySelector(".loginButton");
+const createButton = document.querySelector(".createButton");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const nameInput = document.getElementById("name");
+const nameDiv = document.querySelector(".nameDiv");
+const message = document.querySelector(".message");
+const messageText = document.querySelector(".messageText");
+const switchCreateButton = document.querySelector(".switchCreateButton");
+
+loginButton.addEventListener("click", async (e) => {
+  e.preventDefault();
+  const { login } = await import("./auth_user.js");
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+  if (email === "" || password === "") {
+    message.classList.remove("hidden");
+    messageText.innerText = "Pleasse fill in all fields";
+    return;
+  }
+  try {
+    const userCredential = await login(email, password);
+    const user = userCredential.user;
+    console.log("userCredential", userCredential);
+    messageText.innerText = `Welcome, ${user.displayName}`;
+    setTimeout(() => modal.classList.add("hidden"), 1500);
+  } catch (error) {
+    // const errorCode = error.code;
+    const errorMessage = error.message;
+    message.classList.remove("hidden");
+    messageText.innerText = `Login failed: ${errorMessage}`;
+  }
+});
+
+switchCreateButton.addEventListener("click", () => {
+  nameDiv.classList.remove("hidden");
+  loginButton.classList.add("hidden");
+  switchCreateButton.classList.add("hidden");
+  createButton.classList.remove("hidden");
+});
+
+createButton.addEventListener("click", async () => {
+  const { createUser } = await import("./auth_user.js");
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+  const name = nameInput.value.trim();
+
+  if (email === "" || password === "" || name === "") {
+    message.classList.remove("hidden");
+    messageText.innerText = "Please fill in all fields";
+    return;
+  }
+
+  try {
+    const userCredential = await createUser(email, password, name);
+    const user = userCredential.user;
+    messageText.innerText = `Welcome, ${user.displayName}`;
+    nameDiv.classList.add("hidden");
+    loginButton.classList.remove("hidden");
+    switchCreateButton.classList.add("hidden");
+  } catch (error) {
+    message.classList.remove("hidden");
+    messageText.innerText = `Error: ${error.message}`;
+  }
+});
 
 const main = document.querySelector("main");
 const addButton = document.querySelector(".addTask__button");
