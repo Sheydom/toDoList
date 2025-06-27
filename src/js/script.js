@@ -15,7 +15,7 @@ const message = document.querySelector(".message");
 const messageText = document.querySelector(".messageText");
 const switchCreateButton = document.querySelector(".switchCreateButton");
 const welcome = document.querySelector(".welcome");
-const mainLoading = document.querySelector(".loading");
+// const mainLoading = document.querySelector(".loading");
 const logoutButton = document.querySelector(".logoutButton");
 const backToLoginButton = document.querySelector(".backToLoginButton");
 
@@ -33,7 +33,7 @@ listenToAuthState((user) => {
   if (user) {
     // ✅ User is logged in
     modal.classList.add("hidden");
-    mainLoading.classList.remove("loading");
+    // mainLoading.classList.remove("loading");
   } else {
     // ❌ User is logged out
     modal.classList.remove("hidden");
@@ -43,6 +43,7 @@ listenToAuthState((user) => {
 backToLoginButton.addEventListener("click", () => {
   backToLoginButton.classList.add("hidden");
   nameDiv.classList.add("hidden");
+  nameInput.required = false;
   loginButton.classList.remove("hidden");
   createButton.classList.add("hidden");
   switchCreateButton.classList.remove("hidden");
@@ -73,6 +74,7 @@ loginButton.addEventListener("click", async (e) => {
 
 switchCreateButton.addEventListener("click", () => {
   nameDiv.classList.remove("hidden");
+  nameInput.required = true;
   loginButton.classList.add("hidden");
   switchCreateButton.classList.add("hidden");
   createButton.classList.remove("hidden");
