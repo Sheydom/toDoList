@@ -13,7 +13,8 @@ const __dirname = dirname(__filename);
 export default {
   // Use ES6 module syntax
   mode: "production", // enables automaization automatically
-  devtool: "source-map", // create map file
+  // devtool: "source-map", // create source map
+  devtool: false,
   entry: "./src/js/script.js", //adjust point of entry
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -32,6 +33,18 @@ export default {
   ],
 
   optimization: {
+    splitChunks: {
+      chunks: "all", // ✅ apply to dynamic & static imports
+      minSize: 20000, // default: don’t split tiny files
+      maxSize: 244000, // target bundle size before splitting
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/, // match all 3rd-party libs
+          name: "vendors",
+          chunks: "all",
+        },
+      },
+    },
     minimizer: [
       new CssMinimizerWebpackPlugin({
         minimizerOptions: {
@@ -74,7 +87,7 @@ export default {
     ],
   },
   devServer: {
-    static: "./", // Serve files from this folder
+    static: "./dist", // Serve files from this folder
     port: 3000, // You can change the port if needed
     open: true, // Auto-open in your browser
     hot: true, // Enable hot reloading (optional but nice)

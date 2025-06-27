@@ -17,6 +17,8 @@ const switchCreateButton = document.querySelector(".switchCreateButton");
 const welcome = document.querySelector(".welcome");
 const mainLoading = document.querySelector(".loading");
 const logoutButton = document.querySelector(".logoutButton");
+const backToLoginButton = document.querySelector(".backToLoginButton");
+
 //sign out function
 logoutButton.addEventListener("click", async () => {
   try {
@@ -38,6 +40,14 @@ listenToAuthState((user) => {
   }
 });
 
+backToLoginButton.addEventListener("click", () => {
+  backToLoginButton.classList.add("hidden");
+  nameDiv.classList.add("hidden");
+  loginButton.classList.remove("hidden");
+  createButton.classList.add("hidden");
+  switchCreateButton.classList.remove("hidden");
+});
+
 loginButton.addEventListener("click", async (e) => {
   e.preventDefault();
   const { login } = await import("./auth_user.js");
@@ -51,10 +61,7 @@ loginButton.addEventListener("click", async (e) => {
   try {
     const userCredential = await login(email, password);
     const user = userCredential.user;
-    message.classList.remove("hidden");
-    message.classList.add("messageGreen");
-    messageText.innerText = `Welcome, ${user.displayName}`;
-    setTimeout(() => modal.classList.add("hidden"), 1000);
+    modal.classList.add("hidden");
     welcome.innerText = `${user.displayName}'s`;
   } catch (error) {
     // const errorCode = error.code;
@@ -69,6 +76,7 @@ switchCreateButton.addEventListener("click", () => {
   loginButton.classList.add("hidden");
   switchCreateButton.classList.add("hidden");
   createButton.classList.remove("hidden");
+  backToLoginButton.classList.remove("hidden");
 });
 
 createButton.addEventListener("click", async () => {

@@ -218,7 +218,8 @@ main {
 }
 
 .createButton,
-.switchCreateButton {
+.switchCreateButton,
+.backToLoginButton {
   margin-top: 10px;
   width: 100%;
   padding: 0.5rem;
@@ -252,8 +253,9 @@ main {
   font-weight: 600;
 }
 
-.loading {
-  visibility: hidden;
+.buttonsDiv {
+  display: flex;
+  gap: 10px;
 }
 
 .logoutButton {
