@@ -86,7 +86,7 @@
       <!-- Login Modal -->
       <div id="loginModal" class="modal hidden">
         <div class="modal-content">
-          <h2>Login</h2>
+          <h2 class="h2Header">Login</h2>
           <div class="message hidden">
             <p class="messageText"></p>
           </div>
@@ -99,6 +99,7 @@
             <div class="emailDiv">
               <label for="email">Email:</label>
               <input
+                autocomplete="username"
                 type="email"
                 id="email"
                 required
@@ -108,6 +109,7 @@
             <div class="passDiv">
               <label for="password">Password:</label>
               <input
+                autocomplete="current-password"
                 type="password"
                 id="password"
                 required

@@ -13,8 +13,8 @@ const __dirname = dirname(__filename);
 export default {
   // Use ES6 module syntax
   mode: "production", // enables automaization automatically
-  // devtool: "source-map", // create source map
-  devtool: false,
+  devtool: "source-map", // create source map
+  //devtool: false,
   entry: "./src/js/script.js", //adjust point of entry
   output: {
     path: path.resolve(__dirname, "dist"),
