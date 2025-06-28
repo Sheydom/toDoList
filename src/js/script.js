@@ -15,7 +15,6 @@ const message = document.querySelector(".message");
 const messageText = document.querySelector(".messageText");
 const switchCreateButton = document.querySelector(".switchCreateButton");
 const welcome = document.querySelector(".welcome");
-// const mainLoading = document.querySelector(".loading");
 const logoutButton = document.querySelector(".logoutButton");
 const backToLoginButton = document.querySelector(".backToLoginButton");
 
@@ -33,7 +32,6 @@ listenToAuthState((user) => {
   if (user) {
     // ✅ User is logged in
     modal.classList.add("hidden");
-    // mainLoading.classList.remove("loading");
   } else {
     // ❌ User is logged out
     modal.classList.remove("hidden");
@@ -125,7 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
   counterTasks();
   hideExample();
   loadRangeValue();
-  console.log("slidervalue", sliderValue);
   warnOldest();
   // setInterval(warnOldest, 1000); // test slider value in seconds
   setInterval(warnOldest, 1000 * 60 * 60 * 12); // Check every 12 hours
@@ -193,9 +190,8 @@ taskInput.addEventListener("keypress", (event) => {
 //event listener to edit task
 taskList.addEventListener("click", (event) => {
   if (event.target.closest(".tasklist__edit")) {
-    // const task = event.target.closest(".tasklist__task");
     const newTask = event.target.closest(".tasklist__newTask");
-    // const taskText = task.querySelector("p").textContent;
+
     const newTaskText = newTask.querySelector("p").textContent;
 
     //create input field to edit task
@@ -204,18 +200,15 @@ taskList.addEventListener("click", (event) => {
     editInputField.value = newTaskText;
     editInputField.classList.add("edit__input");
 
-    // replace p with inputfield
-    // const paragraph = task.querySelector("p");
     const newParagraph = newTask.querySelector("p");
     let tasks = JSON.parse(localStorage.getItem("tasks") || []);
     const taskIndex = tasks.findIndex(
-      (task) =>
-        // task.text === paragraph.textContent ||
-        task.text === newParagraph.textContent
+      (task) => task.text === newParagraph.textContent
     );
-    // paragraph.replaceWith(editInputField);
+
     newParagraph.replaceWith(editInputField);
     editInputField.focus();
+
     // save edited task when user press enter
     editInputField.addEventListener("keypress", (event) => {
       if (event.key === "Enter" && editInputField.value.trim() !== "") {
@@ -411,8 +404,7 @@ function warnOldest() {
       const taskDate = new Date(task.timestamp);
       const taskDiffTime = Math.abs(today - taskDate);
       const taskDiffDays = Math.floor(taskDiffTime / (1000 * 60 * 60 * 24)); //floor better than ceil because it rounds up i needs to be a full day 4,1 = 4 and not 5
-      console.log("taskDiffDays", taskDiffDays);
-      console.log("sliderValue", sliderValue);
+
       const taskElement = Array.from(document.querySelectorAll("p")).find(
         (p) => task.text === p.textContent
       );
