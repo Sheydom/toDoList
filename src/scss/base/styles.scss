@@ -20,13 +20,14 @@ body {
 
 main {
   display: flex;
-  // position: relative;
+
   flex-direction: column;
   background-color: #090c35;
   color: white;
   max-width: 500px;
   max-height: fit-content;
   padding: 25px;
+
   border-radius: 10px;
   box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
 }
@@ -194,6 +195,7 @@ main {
 .modal-content {
   background-color: rgb(101, 185, 241);
   padding: 2rem;
+  padding-bottom: 1rem;
   border-radius: 8px;
   width: 300px;
 }
@@ -283,4 +285,11 @@ main {
   color: white;
   padding: 5px;
   cursor: pointer;
+}
+
+.forgotPasswordSection {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
 }

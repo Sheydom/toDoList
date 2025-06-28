@@ -19,6 +19,8 @@ const welcome = document.querySelector(".welcome");
 const logoutButton = document.querySelector(".logoutButton");
 const backToLoginButton = document.querySelector(".backToLoginButton");
 
+//reset password function
+
 //sign out function
 logoutButton.addEventListener("click", async () => {
   try {

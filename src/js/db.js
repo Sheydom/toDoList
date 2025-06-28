@@ -7,6 +7,7 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
+import { sendPasswordResetEmail } from "firebase/auth";
 
 //save a new task for current user
 export async function addTask(text, checked = false) {
@@ -62,4 +63,14 @@ export async function clearTasks() {
     );
   });
   await Promise.all(deletePromises);
+}
+
+//reset password
+export async function resetPassword(email) {
+  try {
+    await sendPasswordResetEmail(auth, email);
+    alert("Password reset email sent. Check your inbox.");
+  } catch (error) {
+    alert("Error: " + error.message);
+  }
 }
