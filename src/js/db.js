@@ -74,3 +74,34 @@ export async function resetPassword(email) {
     alert("Error: " + error.message);
   }
 }
+
+//save slider value to firebase
+export async function saveSliderValueToFirebase(value) {
+  const { getAuth } = await import("firebase/auth");
+  const { getFirestore, doc, setDoc } = await import("firebase/firestore");
+  const auth = getAuth();
+  const db = getFirestore();
+  const user = auth.currentUser;
+  if (!user) return;
+  await setDoc(
+    doc(db, "users", user.uid),
+    { sliderValue: value },
+    { merge: true }
+  );
+}
+
+//load slider value from firebase
+
+export async function loadSliderValueFromFirebase() {
+  const { getAuth } = await import("firebase/auth");
+  const { getFirestore, doc, getDoc } = await import("firebase/firestore");
+  const auth = getAuth();
+  const db = getFirestore();
+  const user = auth.currentUser;
+  if (!user) return null;
+  const docSnap = await getDoc(doc(db, "users", user.uid));
+  if (docSnap.exists() && docSnap.data().sliderValue !== undefined) {
+    return docSnap.data().sliderValue;
+  }
+  return null;
+}

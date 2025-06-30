@@ -3,6 +3,8 @@ import "../scss/base/styles.css"; // or .scss for webpack
 import "./firebase.js"; // Import Firebase app
 import { listenToAuthState } from "./auth_user.js";
 import { logout } from "./auth_user.js";
+import { loadSliderValueFromFirebase } from "./db.js";
+import { saveSliderValueToFirebase } from "./db.js";
 
 const h2Header = document.querySelector(".h2Header");
 const modal = document.querySelector(".modal");
@@ -22,6 +24,27 @@ const loginForm = document.querySelector("#loginForm");
 const resetButton = document.querySelector("#resetBtn");
 const reset = document.querySelector(".reset");
 
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadTasks();
+  counterTasks();
+  hideExample();
+  warnOldest();
+  initializeSlider();
+  // setInterval(warnOldest, 1000); // test slider value in seconds
+  setInterval(warnOldest, 1000 * 60 * 60 * 12); // Check every 12 hours
+});
+
+async function initializeSlider() {
+  const savedValue = await loadSliderValueFromFirebase();
+  if (savedValue !== null) {
+    slider.value = savedValue;
+    sliderValue = parseInt(savedValue, 10);
+    rangeValue.innerText =
+      sliderValue > 1 ? `in ${sliderValue} days` : `in ${sliderValue} day`;
+    warnOldest();
+  }
+}
+
 //reset password ui
 resetButton.addEventListener("click", () => {
   h2Header.innerText = "Reset Password";
@@ -36,26 +59,6 @@ resetButton.addEventListener("click", () => {
   reset.setAttribute("type", "submit");
   passwordInput.required = false;
 });
-
-// //reset fuction
-// reset.addEventListener("click", async () => {
-//   try {
-//     const email = emailInput.value.trim();
-//     const { resetPassword } = await import("./db.js");
-//     if (!email) {
-//       alert("Please enter your email address.");
-//       return;
-//     }
-
-//     await resetPassword(email);
-
-//     message.classList.remove("hidden");
-//     messageText.innerText = "Email to reset password sent";
-//     message.classList.add("messageGreen");
-//   } catch (error) {
-//     alert("Error: " + error.message);
-//   }
-// });
 
 //sign out function
 logoutButton.addEventListener("click", async () => {
@@ -90,6 +93,7 @@ listenToAuthState(async (user) => {
     passwordInput.required = true;
 
     await loadTasks();
+    await initializeSlider();
     counterTasks();
     hideExample();
     warnOldest();
@@ -215,41 +219,15 @@ const statusCounter = document.querySelector(".status__counter");
 const example = document.querySelector(".tasklist__task");
 const slider = document.querySelector(".reminderSlider__sliderInput");
 const rangeValue = document.querySelector(".rangeValue");
-let sliderValue = slider.value;
-
-document.addEventListener("DOMContentLoaded", async () => {
-  await loadTasks();
-  counterTasks();
-  hideExample();
-  loadRangeValue();
-  warnOldest();
-  // setInterval(warnOldest, 1000); // test slider value in seconds
-  setInterval(warnOldest, 1000 * 60 * 60 * 12); // Check every 12 hours
-});
+let sliderValue = parseInt(slider.value, 10);
 
 slider.addEventListener("input", () => {
-  sliderValue = slider.value;
+  sliderValue = parseInt(slider.value, 10);
   rangeValue.innerText =
     sliderValue > 1 ? `in ${sliderValue} days` : `in ${sliderValue} day`;
-  saveRangeValue(sliderValue);
   warnOldest();
+  saveSliderValueToFirebase(sliderValue);
 });
-
-function saveRangeValue(sliderValue) {
-  localStorage.setItem("sliderValue", sliderValue);
-}
-
-function loadRangeValue() {
-  const savedValue = localStorage.getItem("sliderValue");
-
-  if (savedValue) {
-    slider.value = savedValue;
-    rangeValue.innerText =
-      savedValue > 1 ? `in ${savedValue} days` : `in ${savedValue} day`;
-    // rangeValue.innerText = `in ${savedValue} days`;
-    sliderValue = parseInt(savedValue, 10);
-  }
-}
 
 // function to add tasks
 async function addTask() {
@@ -485,7 +463,7 @@ async function warnOldest() {
     const today = new Date();
     const taskDate = new Date(task.timestamp);
     const taskDiffTime = Math.abs(today - taskDate);
-    const taskDiffDays = Math.floor(taskDiffTime / (1000 * 60 * 60 * 24)); //floor better than ceil because it rounds up i needs to be a full day 4,1 = 4 and not 5
+    const taskDiffDays = Math.floor(taskDiffTime / (1000 * 60 * 60 * 24)); //floor better than ceil because it rounds up i needs to be a full day 4,1 = 4 and not 5// <-- Add this
 
     const taskElement = document
       .querySelector(`input.tasklist__checkbox[data-id="${task.id}"]`)
