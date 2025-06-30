@@ -220,7 +220,8 @@ main {
 
 .createButton,
 .switchCreateButton,
-.backToLoginButton {
+.backToLoginButton,
+.reset {
   margin-top: 10px;
   width: 100%;
   padding: 0.5rem;
@@ -252,11 +253,18 @@ main {
 
 .welcome {
   font-weight: 600;
+  font-size: 2rem;
 }
 
 .buttonsDiv {
   display: flex;
   gap: 10px;
+}
+
+.reset {
+  background-color: black;
+  color: white;
+  border: solid red 2px;
 }
 
 .logoutButton {

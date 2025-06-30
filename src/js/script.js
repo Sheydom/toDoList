@@ -18,13 +18,60 @@ const switchCreateButton = document.querySelector(".switchCreateButton");
 const welcome = document.querySelector(".welcome");
 const logoutButton = document.querySelector(".logoutButton");
 const backToLoginButton = document.querySelector(".backToLoginButton");
+const loginForm = document.querySelector("#loginForm");
+const resetButton = document.querySelector("#resetBtn");
+const reset = document.querySelector(".reset");
 
-//reset password function
+//reset password ui
+resetButton.addEventListener("click", () => {
+  h2Header.innerText = "Reset Password";
+  nameDiv.classList.add("hidden");
+  nameDiv.required = false;
+  loginButton.classList.add("hidden");
+  switchCreateButton.classList.add("hidden");
+  backToLoginButton.classList.remove("hidden");
+  reset.classList.remove("hidden");
+  resetButton.classList.add("hidden");
+  passwordInput.classList.add("hidden");
+  reset.setAttribute("type", "submit");
+  passwordInput.required = false;
+});
+
+// //reset fuction
+// reset.addEventListener("click", async () => {
+//   try {
+//     const email = emailInput.value.trim();
+//     const { resetPassword } = await import("./db.js");
+//     if (!email) {
+//       alert("Please enter your email address.");
+//       return;
+//     }
+
+//     await resetPassword(email);
+
+//     message.classList.remove("hidden");
+//     messageText.innerText = "Email to reset password sent";
+//     message.classList.add("messageGreen");
+//   } catch (error) {
+//     alert("Error: " + error.message);
+//   }
+// });
 
 //sign out function
 logoutButton.addEventListener("click", async () => {
   try {
     await logout();
+    backToLoginButton.classList.add("hidden");
+    nameDiv.classList.add("hidden");
+    nameInput.required = false;
+    loginButton.classList.remove("hidden");
+    createButton.classList.add("hidden");
+    switchCreateButton.classList.remove("hidden");
+    passwordInput.autocomplete = "current-password";
+    messageText.innerText = "";
+    message.classList.add("hidden");
+    h2Header.innerText = "Login";
+    reset.classList.add("hidden");
   } catch (error) {
     alert("Logout failed: " + error.message);
   }
@@ -36,6 +83,12 @@ listenToAuthState(async (user) => {
     // ✅ User is logged in
     modal.classList.add("hidden");
     welcome.innerText = user.displayName ? `${user.displayName}'s` : "";
+    message.classList.add("hidden");
+    messageText.innerText = "";
+    reset.classList.add("hidden");
+    reset.setAttribute("type", "button");
+    passwordInput.required = true;
+
     await loadTasks();
     counterTasks();
     hideExample();
@@ -59,28 +112,83 @@ backToLoginButton.addEventListener("click", () => {
   messageText.innerText = "";
   message.classList.add("hidden");
   h2Header.innerText = "Login";
+  reset.classList.add("hidden");
+  resetButton.classList.remove("hidden");
+  passwordInput.classList.remove("hidden");
+  reset.setAttribute("type", "button");
+  passwordInput.required = true;
 });
 
-loginButton.addEventListener("click", async (e) => {
+loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const { login } = await import("./auth_user.js");
-  const email = emailInput.value.trim();
-  const password = passwordInput.value.trim();
-  if (email === "" || password === "") {
-    message.classList.remove("hidden");
-    messageText.innerText = "Pleasse fill in all fields";
-    return;
-  }
-  try {
-    const userCredential = await login(email, password);
-    const user = userCredential.user;
-    modal.classList.add("hidden");
-    welcome.innerText = user.displayName ? `${user.displayName}'s` : "Welcome";
-  } catch (error) {
-    // const errorCode = error.code;
-    const errorMessage = error.message;
-    message.classList.remove("hidden");
-    messageText.innerText = `Login failed: ${errorMessage}`;
+
+  // login mode for hit enter
+  if (!loginButton.classList.contains("hidden")) {
+    const { login } = await import("./auth_user.js");
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+    if (email === "" || password === "") {
+      message.classList.remove("hidden");
+      messageText.innerText = "Pleasse fill in all fields";
+      return;
+    }
+    try {
+      const userCredential = await login(email, password);
+      const user = userCredential.user;
+      modal.classList.add("hidden");
+      welcome.innerText = user.displayName
+        ? `${user.displayName}'s`
+        : "Welcome";
+    } catch (error) {
+      // const errorCode = error.code;
+      const errorMessage = error.message;
+      message.classList.remove("hidden");
+      messageText.innerText = `Login failed: ${errorMessage}`;
+    }
+  } else if (
+    !createButton.classList.contains("hidden") &&
+    !backToLoginButton.classList.contains("hidden")
+  ) {
+    //create user mode for hit enter
+    const { createUser } = await import("./auth_user.js");
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+    const name = nameInput.value.trim();
+
+    if (email === "" || password === "" || name === "") {
+      message.classList.remove("hidden");
+      messageText.innerText = "Please fill in all fields";
+      return;
+    }
+
+    try {
+      const userCredential = await createUser(email, password, name);
+      const user = userCredential.user;
+      nameDiv.classList.remove("hidden");
+      welcome.innerText = user.displayName
+        ? `${user.displayName}'s`
+        : "Welcome";
+    } catch (error) {
+      message.classList.remove("hidden");
+      messageText.innerText = `Error: ${error.message}`;
+    }
+  } else if (!reset.classList.contains("hidden")) {
+    try {
+      const email = emailInput.value.trim();
+      const { resetPassword } = await import("./db.js");
+      if (!email) {
+        alert("Please enter your email address.");
+        return;
+      }
+
+      await resetPassword(email);
+
+      message.classList.remove("hidden");
+      messageText.innerText = "Email to reset password sent";
+      message.classList.add("messageGreen");
+    } catch (error) {
+      alert("Error: " + error.message);
+    }
   }
 });
 
@@ -94,33 +202,7 @@ switchCreateButton.addEventListener("click", () => {
   passwordInput.autocomplete = "new-password";
   emailInput.autocomplete = "";
   h2Header.innerText = "New Account";
-});
-
-createButton.addEventListener("click", async () => {
-  const { createUser } = await import("./auth_user.js");
-  const email = emailInput.value.trim();
-  const password = passwordInput.value.trim();
-  const name = nameInput.value.trim();
-
-  if (email === "" || password === "" || name === "") {
-    message.classList.remove("hidden");
-    messageText.innerText = "Please fill in all fields";
-    return;
-  }
-
-  try {
-    const userCredential = await createUser(email, password, name);
-    const user = userCredential.user;
-    message.classList.remove("hidden");
-    messageText.innerText = `Welcome, ${user.displayName}`;
-    message.classList.add("messageGreen");
-    nameDiv.classList.add("hidden");
-    loginButton.classList.remove("hidden");
-    switchCreateButton.classList.add("hidden");
-  } catch (error) {
-    message.classList.remove("hidden");
-    messageText.innerText = `Error: ${error.message}`;
-  }
+  reset.classList.add("hidden");
 });
 
 const main = document.querySelector("main");
@@ -329,10 +411,6 @@ async function counterTasks() {
   const counter = tasks.length;
   const checkCounter = document.querySelectorAll(".tasklist__checkbox");
   const newtask = document.querySelectorAll(".tasklist__newTask");
-
-  checkCounter.forEach((checkbox) => {
-    checkbox.addEventListener("click", counterTasks);
-  });
 
   const checkedTasks = Array.from(checkCounter).filter(
     (checkbox) => checkbox.checked
