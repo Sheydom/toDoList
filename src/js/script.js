@@ -24,6 +24,18 @@ const loginForm = document.querySelector("#loginForm");
 const resetButton = document.querySelector("#resetBtn");
 const reset = document.querySelector(".reset");
 
+const main = document.querySelector("main");
+const addButton = document.querySelector(".addTask__button");
+const taskInput = document.querySelector(".addTask__input");
+const taskList = document.querySelector(".tasklist");
+
+const clearAllButton = document.querySelector(".clearAll__button");
+const statusCounter = document.querySelector(".status__counter");
+const example = document.querySelector(".tasklist__task");
+const slider = document.querySelector(".reminderSlider__sliderInput");
+const rangeValue = document.querySelector(".rangeValue");
+let sliderValue = parseInt(slider.value, 10);
+
 document.addEventListener("DOMContentLoaded", async () => {
   await loadTasks();
   counterTasks();
@@ -39,10 +51,12 @@ async function initializeSlider() {
   if (savedValue !== null) {
     slider.value = savedValue;
     sliderValue = parseInt(savedValue, 10);
-    rangeValue.innerText =
-      sliderValue > 1 ? `in ${sliderValue} days` : `in ${sliderValue} day`;
-    warnOldest();
+  } else {
+    sliderValue = parseInt(slider.value, 10);
   }
+  rangeValue.innerText =
+    sliderValue > 1 ? `in ${sliderValue} days` : `in ${sliderValue} day`;
+  warnOldest();
 }
 
 //reset password ui
@@ -123,6 +137,11 @@ backToLoginButton.addEventListener("click", () => {
   passwordInput.required = true;
 });
 
+// event listener for buttons so they trigger submit when clicked
+loginButton.addEventListener("click", () => loginForm.requestSubmit());
+createButton.addEventListener("click", () => loginForm.requestSubmit());
+reset.addEventListener("click", () => loginForm.requestSubmit());
+
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -169,6 +188,9 @@ loginForm.addEventListener("submit", async (e) => {
       const userCredential = await createUser(email, password, name);
       const user = userCredential.user;
       nameDiv.classList.remove("hidden");
+      sliderValue = parseInt(slider.value, 10);
+      rangeValue.innerText =
+        sliderValue > 1 ? `in ${sliderValue} days` : `in ${sliderValue} day`;
       welcome.innerText = user.displayName
         ? `${user.displayName}'s`
         : "Welcome";
@@ -208,18 +230,6 @@ switchCreateButton.addEventListener("click", () => {
   h2Header.innerText = "New Account";
   reset.classList.add("hidden");
 });
-
-const main = document.querySelector("main");
-const addButton = document.querySelector(".addTask__button");
-const taskInput = document.querySelector(".addTask__input");
-const taskList = document.querySelector(".tasklist");
-
-const clearAllButton = document.querySelector(".clearAll__button");
-const statusCounter = document.querySelector(".status__counter");
-const example = document.querySelector(".tasklist__task");
-const slider = document.querySelector(".reminderSlider__sliderInput");
-const rangeValue = document.querySelector(".rangeValue");
-let sliderValue = parseInt(slider.value, 10);
 
 slider.addEventListener("input", () => {
   sliderValue = parseInt(slider.value, 10);
