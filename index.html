@@ -21,125 +21,126 @@
       rel="stylesheet"
     />
   </head>
-
-  <body>
-    <main>
-      <button class="logoutButton" type="button">LogOut</button>
-      <section class="status">
-        <div class="status__content">
-          <div class="status__header">
-            <p class="welcome"></p>
-            <p>ToDo-List</p>
-            <div class="reminderSlider">
-              <p class="reminderText">Set your reminder</p>
-              <input
-                type="range"
-                name="slider"
-                class="reminderSlider__sliderInput"
-                id="rangeInput"
-                min="1"
-                max="10"
-              />
-              <p class="rangeValue"></p>
+  <div class="app" style="visibility: hidden">
+    <body>
+      <main>
+        <button class="logoutButton" type="button">LogOut</button>
+        <section class="status">
+          <div class="status__content">
+            <div class="status__header">
+              <p class="welcome"></p>
+              <p>ToDo-List</p>
+              <div class="reminderSlider">
+                <p class="reminderText">Set your reminder</p>
+                <input
+                  type="range"
+                  name="slider"
+                  class="reminderSlider__sliderInput"
+                  id="rangeInput"
+                  min="1"
+                  max="10"
+                />
+                <p class="rangeValue"></p>
+              </div>
             </div>
+            <p class="status__counter"></p>
           </div>
-          <p class="status__counter"></p>
-        </div>
-      </section>
-      <section class="newTask">
-        <div class="addTask">
-          <input
-            type="text"
-            class="addTask__input"
-            placeholder="Please enter a Task..."
-            name="taskk"
-            id="taskInput"
-          />
-          <button class="addTask__button" id="addTaskButton">+</button>
-          <button class="clearAll__button" id="clearTaskButton">
-            clear all
-          </button>
-        </div>
-      </section>
-
-      <section class="tasklist">
-        <div class="tasklist__task" id="task">
-          <div class="tasklist__all">
+        </section>
+        <section class="newTask">
+          <div class="addTask">
             <input
-              type="checkbox"
-              name="task"
-              class="tasklist__checkbox"
-              disabled
+              type="text"
+              class="addTask__input"
+              placeholder="Please enter a Task..."
+              name="taskk"
+              id="taskInput"
             />
-            <p>Example task...</p>
-            <span><i class="ri-edit-2-line tasklist__edit"></i></span>
+            <button class="addTask__button" id="addTaskButton">+</button>
+            <button class="clearAll__button" id="clearTaskButton">
+              clear all
+            </button>
           </div>
-          <div class="delete">
-            <span class="tasklist__delete">
-              <i class="ri-delete-bin-6-line"></i
-            ></span>
+        </section>
+
+        <section class="tasklist">
+          <div class="tasklist__task" id="task">
+            <div class="tasklist__all">
+              <input
+                type="checkbox"
+                name="task"
+                class="tasklist__checkbox"
+                disabled
+              />
+              <p>Example task...</p>
+              <span><i class="ri-edit-2-line tasklist__edit"></i></span>
+            </div>
+            <div class="delete">
+              <span class="tasklist__delete">
+                <i class="ri-delete-bin-6-line"></i
+              ></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- login modal -->
+        <!-- Login Modal -->
+        <div id="loginModal" class="modal hidden">
+          <div class="modal-content">
+            <h2 class="h2Header">Login</h2>
+            <div class="message hidden">
+              <p class="messageText"></p>
+            </div>
+            <form id="loginForm">
+              <div class="nameDiv hidden">
+                <label for="name">Name:</label>
+                <input type="text" id="name" placeholder="Max" />
+              </div>
+
+              <div class="emailDiv">
+                <label for="email">Email:</label>
+                <input
+                  autocomplete="username"
+                  type="email"
+                  id="email"
+                  required
+                  placeholder="Email@gmail.com"
+                />
+              </div>
+              <div class="passDiv">
+                <label for="password">Password:</label>
+                <input
+                  autocomplete="current-password"
+                  type="password"
+                  id="password"
+                  required
+                  placeholder="****"
+                />
+              </div>
+              <button class="loginButton" type="submit">Login</button>
+
+              <div class="buttonsDiv">
+                <button class="createButton hidden" type="button">
+                  Create Account
+                </button>
+                <button type="button" class="reset hidden">Reset</button>
+                <button class="backToLoginButton hidden" type="button">
+                  Back to Login</button
+                ><button class="switchCreateButton" type="button">
+                  New Account
+                </button>
+              </div>
+              <div class="forgotPasswordSection">
+                <button class="logoutButton" id="resetBtn" type="button">
+                  Reset Password
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-      </section>
-
-      <!-- login modal -->
-      <!-- Login Modal -->
-      <div id="loginModal" class="modal hidden">
-        <div class="modal-content">
-          <h2 class="h2Header">Login</h2>
-          <div class="message hidden">
-            <p class="messageText"></p>
-          </div>
-          <form id="loginForm">
-            <div class="nameDiv hidden">
-              <label for="name">Name:</label>
-              <input type="text" id="name" placeholder="Max" />
-            </div>
-
-            <div class="emailDiv">
-              <label for="email">Email:</label>
-              <input
-                autocomplete="username"
-                type="email"
-                id="email"
-                required
-                placeholder="Email@gmail.com"
-              />
-            </div>
-            <div class="passDiv">
-              <label for="password">Password:</label>
-              <input
-                autocomplete="current-password"
-                type="password"
-                id="password"
-                required
-                placeholder="****"
-              />
-            </div>
-            <button class="loginButton" type="submit">Login</button>
-
-            <div class="buttonsDiv">
-              <button class="createButton hidden" type="button">
-                Create Account
-              </button>
-              <button type="button" class="reset hidden">Reset</button>
-              <button class="backToLoginButton hidden" type="button">
-                Back to Login</button
-              ><button class="switchCreateButton" type="button">
-                New Account
-              </button>
-            </div>
-            <div class="forgotPasswordSection">
-              <button class="logoutButton" id="resetBtn" type="button">
-                Reset Password
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </main>
-    <!-- <base href="/toDoList/" /> -->
-    <!-- <script src="src/js/script.js"></script> -->
-    <!-- <script src="main.js"></script> webpackplugin inject these -->
-  </body>
+      </main>
+      <!-- <base href="/toDoList/" /> -->
+      <!-- <script src="src/js/script.js"></script> -->
+      <!-- <script src="main.js"></script> webpackplugin inject these -->
+    </body>
+  </div>
 </html>

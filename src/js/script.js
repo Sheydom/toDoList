@@ -37,25 +37,47 @@ const rangeValue = document.querySelector(".rangeValue");
 let sliderValue = parseInt(slider.value, 10);
 
 document.addEventListener("DOMContentLoaded", async () => {
+  await initializeSlider();
   await loadTasks();
   counterTasks();
   hideExample();
   warnOldest();
-  initializeSlider();
+
   // setInterval(warnOldest, 1000); // test slider value in seconds
   setInterval(warnOldest, 1000 * 60 * 60 * 12); // Check every 12 hours
 });
 
+//  async function initializeSlider() {
+//    // hide slider until its synchronized with firebase
+//    const savedValue = await loadSliderValueFromFirebase();
+//    if (savedValue !== null) {
+//      slider.value = savedValue;
+//      sliderValue = parseInt(savedValue, 10);
+//    } else {
+//      sliderValue = parseInt(slider.value, 10);
+//    }
+//    rangeValue.innerText =
+//      sliderValue > 1 ? `in ${sliderValue} days` : `in ${sliderValue} day`;
+//    app.style.display = "block";
+//    warnOldest();
+//  }
+
 async function initializeSlider() {
   const savedValue = await loadSliderValueFromFirebase();
-  if (savedValue !== null) {
-    slider.value = savedValue;
-    sliderValue = parseInt(savedValue, 10);
-  } else {
-    sliderValue = parseInt(slider.value, 10);
-  }
+
+  // Pick Firebase value or safe fallback
+  sliderValue = savedValue !== null ? parseInt(savedValue, 10) : 3;
+
+  // Set the slider's value before it's visible
+  slider.value = sliderValue;
+
+  // Update UI text
   rangeValue.innerText =
     sliderValue > 1 ? `in ${sliderValue} days` : `in ${sliderValue} day`;
+
+  // ✅ Now show the app — after value is correct
+  // document.querySelector(".app").style.visibility = "visible";
+
   warnOldest();
 }
 
@@ -105,12 +127,12 @@ listenToAuthState(async (user) => {
     reset.classList.add("hidden");
     reset.setAttribute("type", "button");
     passwordInput.required = true;
-
+    counterTasks();
     await loadTasks();
     await initializeSlider();
-    counterTasks();
     hideExample();
     warnOldest();
+    document.querySelector(".app").style.visibility = "visible";
   } else {
     // ❌ User is logged out
     modal.classList.remove("hidden");
@@ -304,7 +326,7 @@ taskList.addEventListener("click", (event) => {
   }
 });
 
-//delete function to remove task from localstorage
+//delete function to remove task from firebase
 async function deleteTask(taskID) {
   const { deleteTask } = await import("./db.js");
   await deleteTask(taskID);
@@ -317,6 +339,7 @@ taskList.addEventListener("click", (event) => {
     const task = event.target.closest(".tasklist__newTask");
     const taskId = task.querySelector(".tasklist__checkbox").dataset.id;
     deleteTask(taskId);
+    loadTasks();
     counterTasks();
   }
 });
