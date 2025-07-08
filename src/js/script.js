@@ -23,7 +23,7 @@ const backToLoginButton = document.querySelector(".backToLoginButton");
 const loginForm = document.querySelector("#loginForm");
 const resetButton = document.querySelector("#resetBtn");
 const reset = document.querySelector(".reset");
-
+const passDiv = document.querySelector(".passDiv");
 const main = document.querySelector("main");
 const addButton = document.querySelector(".addTask__button");
 const taskInput = document.querySelector(".addTask__input");
@@ -42,7 +42,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   counterTasks();
   hideExample();
   warnOldest();
-
   // setInterval(warnOldest, 1000); // test slider value in seconds
   setInterval(warnOldest, 1000 * 60 * 60 * 12); // Check every 12 hours
 });
@@ -94,6 +93,8 @@ resetButton.addEventListener("click", () => {
   passwordInput.classList.add("hidden");
   reset.setAttribute("type", "submit");
   passwordInput.required = false;
+  createButton.classList.add("hidden");
+  passDiv.classList.add("hidden");
 });
 
 //sign out function
@@ -127,10 +128,10 @@ listenToAuthState(async (user) => {
     reset.classList.add("hidden");
     reset.setAttribute("type", "button");
     passwordInput.required = true;
-    counterTasks();
     await loadTasks();
     await initializeSlider();
     hideExample();
+    counterTasks();
     warnOldest();
     document.querySelector(".app").style.visibility = "visible";
   } else {
@@ -138,6 +139,7 @@ listenToAuthState(async (user) => {
     modal.classList.remove("hidden");
     taskList.innerHTML = "";
     statusCounter.innerText = "0/0";
+    document.querySelector(".app").style.visibility = "visible";
   }
 });
 
@@ -157,6 +159,7 @@ backToLoginButton.addEventListener("click", () => {
   passwordInput.classList.remove("hidden");
   reset.setAttribute("type", "button");
   passwordInput.required = true;
+  passDiv.classList.remove("hidden");
 });
 
 // event listener for buttons so they trigger submit when clicked
@@ -251,6 +254,7 @@ switchCreateButton.addEventListener("click", () => {
   emailInput.autocomplete = "";
   h2Header.innerText = "New Account";
   reset.classList.add("hidden");
+  passDiv.classList.remove("hidden");
 });
 
 slider.addEventListener("input", () => {

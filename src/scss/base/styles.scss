@@ -69,14 +69,17 @@ main {
 }
 
 .addTask {
+  transition: ease-in-out 0.2s;
   margin-top: 15px;
   display: flex;
   width: 100%;
   margin-bottom: 100px;
+
   &__input {
     flex: 1;
     border-radius: 5px;
     padding: 10px;
+    border: 2px solid black;
   }
   &__button {
     background-color: #7c8afc;
@@ -85,7 +88,14 @@ main {
     width: 2.5rem;
     margin-left: 0.7rem;
     cursor: pointer;
+    border: solid 2px black;
   }
+}
+
+.addTask__button:hover {
+  background-color: #5cfc00;
+  color: black;
+  transform: scale(1.05);
 }
 
 .clearAll__button {
@@ -95,6 +105,11 @@ main {
   width: 2.5rem;
   margin-left: 0.7rem;
   cursor: pointer;
+  border: solid 2px black;
+}
+.clearAll__button:hover {
+  transform: scale(1.05);
+  border-color: red;
 }
 
 //
@@ -139,7 +154,9 @@ main {
   &__delete {
     color: red;
     cursor: pointer;
+    transition: ease-in-out 0.2s;
   }
+
   &__edit {
     right: 5px;
     color: #7c8afc;
@@ -147,6 +164,7 @@ main {
   }
   &__checkbox {
     cursor: pointer;
+    border: 2px solid black;
   }
   &__timestamp {
     position: relative;
@@ -163,7 +181,7 @@ main {
     border-width: 2px;
   }
   &__checkedTask {
-    border-color: green !important;
+    border-color: rgb(4, 245, 4) !important;
     border-width: 2px;
     color: white !important;
   }
@@ -226,9 +244,17 @@ main {
   width: 100%;
   padding: 0.5rem;
   background-color: #4caf50;
+  border: 2px solid #4caf50;
+  border-radius: 45px;
   color: white;
-  border: none;
   cursor: pointer;
+  transition: ease-in-out 0.2s;
+}
+
+.loginButton:hover {
+  background-color: #45a049;
+  border-color: #5cfc00;
+  transform: scale(1.05);
 }
 
 .createButton,
@@ -239,9 +265,21 @@ main {
   width: 100%;
   padding: 0.5rem;
   color: white;
-  border: none;
+  border-radius: 45px;
+  border: 3px solid black;
   cursor: pointer;
-  background-color: #2d3db6;
+  background-color: #31008b;
+  transition: ease-in-out 0.2s;
+}
+
+.createButton:hover {
+  border-color: #5cfc00;
+  transform: scale(1.05);
+}
+
+.switchCreateButton:hover {
+  border-color: #5cfc00;
+  transform: scale(1.05);
 }
 
 .hidden {
@@ -261,7 +299,7 @@ main {
 }
 
 .messageGreen {
-  border: solid green 3px;
+  border: solid rgb(4, 245, 4) 3px;
 }
 
 .welcome {
@@ -282,6 +320,30 @@ main {
   background-color: black;
   color: white;
   border: solid red 2px;
+  border-radius: 45px;
+}
+
+.reset:hover {
+  background-color: red;
+  color: white;
+  border: solid black 3px;
+  transform: scale(1.05);
+}
+
+#resetBtn {
+  transition: ease-in-out 0.2s;
+}
+
+#resetBtn:hover {
+  background-color: red;
+  color: white;
+  border: solid black 3px;
+  transform: scale(1.05);
+}
+
+.backToLoginButton:hover {
+  transform: scale(1.05);
+  border-color: #5cfc00;
 }
 
 .logoutButton {
@@ -292,6 +354,12 @@ main {
   color: white;
   padding: 5px;
   cursor: pointer;
+}
+
+.logoutButton:hover {
+  background-color: red;
+  color: white;
+  border-color: black;
 }
 
 .forgotPasswordSection {
