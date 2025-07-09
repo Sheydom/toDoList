@@ -248,13 +248,13 @@ main {
   border-radius: 45px;
   color: white;
   cursor: pointer;
-  transition: ease-in-out 0.2s;
+
 }
 
 .loginButton:hover {
   background-color: #45a049;
   border-color: #5cfc00;
-  transform: scale(1.05);
+  
 }
 
 .createButton,
@@ -269,17 +269,14 @@ main {
   border: 3px solid black;
   cursor: pointer;
   background-color: #31008b;
-  transition: ease-in-out 0.2s;
 }
 
 .createButton:hover {
   border-color: #5cfc00;
-  transform: scale(1.05);
 }
 
 .switchCreateButton:hover {
   border-color: #5cfc00;
-  transform: scale(1.05);
 }
 
 .hidden {
@@ -342,7 +339,6 @@ main {
 }
 
 .backToLoginButton:hover {
-  transform: scale(1.05);
   border-color: #5cfc00;
 }
 
