@@ -138,6 +138,7 @@ main {
   padding: 10px;
   border-radius: 15px;
   overflow: hidden;
+  max-width: 600px;
 }
 .tasklist__all p {
   word-wrap: break-word;
@@ -150,7 +151,11 @@ main {
   transition: ease-in-out 0.2s;
 }
 .tasklist__edit {
-  right: 5px;
+  color: #7c8afc;
+  cursor: pointer;
+}
+.tasklist__calender {
+  margin-left: 5px;
   color: #7c8afc;
   cursor: pointer;
 }
@@ -178,8 +183,20 @@ main {
   color: white !important;
 }
 
+.edit__input {
+  border-color: #7c8afc;
+  border-radius: 5px;
+  outline: none;
+  resize: none;
+  padding: 5px;
+}
+
 .show {
   display: flex;
+}
+
+.hide {
+  display: none;
 }
 
 .modal {

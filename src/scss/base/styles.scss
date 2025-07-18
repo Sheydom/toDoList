@@ -144,6 +144,7 @@ main {
     padding: 10px;
     border-radius: 15px;
     overflow: hidden;
+    max-width: 600px;
 
     p {
       word-wrap: break-word;
@@ -158,7 +159,12 @@ main {
   }
 
   &__edit {
-    right: 5px;
+    // right: 5px;
+    color: #7c8afc;
+    cursor: pointer;
+  }
+  &__calender {
+    margin-left: 5px;
     color: #7c8afc;
     cursor: pointer;
   }
@@ -176,7 +182,6 @@ main {
   }
   &__oldestTask {
     color: red;
-    // font-weight: bold;
     border-color: red;
     border-width: 2px;
   }
@@ -190,10 +195,20 @@ main {
   }
 }
 
+.edit__input {
+  border-color: #7c8afc;
+  border-radius: 5px;
+  outline: none;
+  resize: none;
+  padding: 5px;
+}
+
 .show {
   display: flex;
 }
-
+.hide {
+  display: none;
+}
 // modal css
 .modal {
   // display: none;
@@ -248,13 +263,11 @@ main {
   border-radius: 45px;
   color: white;
   cursor: pointer;
-
 }
 
 .loginButton:hover {
   background-color: #45a049;
   border-color: #5cfc00;
-  
 }
 
 .createButton,
@@ -303,10 +316,6 @@ main {
   font-weight: 600;
   font-size: 2rem;
 }
-
-// .loading {
-//   visibility: hidden;
-// }
 
 .buttonsDiv {
   display: flex;

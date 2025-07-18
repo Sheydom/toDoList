@@ -46,21 +46,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   setInterval(warnOldest, 1000 * 60 * 60 * 12); // Check every 12 hours
 });
 
-//  async function initializeSlider() {
-//    // hide slider until its synchronized with firebase
-//    const savedValue = await loadSliderValueFromFirebase();
-//    if (savedValue !== null) {
-//      slider.value = savedValue;
-//      sliderValue = parseInt(savedValue, 10);
-//    } else {
-//      sliderValue = parseInt(slider.value, 10);
-//    }
-//    rangeValue.innerText =
-//      sliderValue > 1 ? `in ${sliderValue} days` : `in ${sliderValue} day`;
-//    app.style.display = "block";
-//    warnOldest();
-//  }
-
 async function initializeSlider() {
   const savedValue = await loadSliderValueFromFirebase();
 
@@ -299,34 +284,63 @@ taskList.addEventListener("click", (event) => {
     const taskId = checkbox.dataset.id;
 
     // Create input field to edit task
-    const editInputField = document.createElement("input");
-    editInputField.type = "text";
-    editInputField.value = oldText;
+    const editInputField = document.createElement("textarea");
     editInputField.classList.add("edit__input");
-
+    editInputField.value = oldText;
+    editInputField.style.width = `${oldParagraph.offsetWidth}px`;
+    editInputField.style.height = `${oldParagraph.offsetHeight}px`;
     oldParagraph.replaceWith(editInputField);
     editInputField.focus();
 
+    let isSaving = false;
+
+    //save edit function
+    async function saveEdit() {
+      //prevent double saving
+      if (isSaving) return;
+      isSaving = true;
+      const updatedText = editInputField.value.trim();
+      if (updatedText !== "") {
+        const { updateTask } = await import("./db.js");
+        await updateTask(taskId, { text: updatedText });
+        await loadTasks();
+        await counterTasks();
+      } else {
+        // If empty, revert to old paragraph
+        editInputField.replaceWith(oldParagraph);
+      }
+    }
+
     // Save edited task when user presses Enter
-    editInputField.addEventListener("keypress", async (event) => {
+    editInputField.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
-        const updatedText = editInputField.value.trim();
-        if (updatedText !== "") {
-          const { updateTask } = await import("./db.js");
-          await updateTask(taskId, { text: updatedText });
-          await loadTasks();
-          await counterTasks();
-        } else {
-          // If empty, revert to old paragraph
-          editInputField.replaceWith(oldParagraph);
-        }
+        saveEdit();
       }
     });
+    //when you click outside the input field, save the edit
 
-    // Optional: revert to old paragraph on blur if not saved
-    editInputField.addEventListener("blur", () => {
-      editInputField.replaceWith(oldParagraph);
-    });
+    editInputField.addEventListener("blur", () => saveEdit());
+  }
+});
+
+//add calenderDate
+taskList.addEventListener("click", (event) => {
+  const calender = event.target.closest(".tasklist__calender");
+  if (!calender) return;
+  console.log("calenderbutton");
+  const nextElem = calender.nextElementSibling;
+
+  if (!nextElem || !nextElem.classList.contains("calenderInput")) {
+    const dateInput = document.createElement("input");
+    dateInput.type = "date";
+    dateInput.classList.add("calenderInput", "show");
+    dateInput.addEventListener("blur", () => dateInput.classList.add("hide"));
+    calender.after(dateInput);
+    dateInput.focus();
+  } else {
+    nextElem.classList.remove("hide");
+    nextElem.classList.add("show");
+    nextElem.focus();
   }
 });
 
@@ -391,7 +405,7 @@ async function loadTasks() {
     <input data-id="${task.id}" type="checkbox" name="task" class="tasklist__checkbox" ${task.checked ? "checked" : ""} />
     <p>${task.text}</p>
     
-    <span ><span class="tasklist__timestamp">${displayDate}</span><i class="ri-edit-2-line tasklist__edit"></i></span></div>
+    <span ><span class="tasklist__timestamp">${displayDate}</span><i class="ri-edit-2-line tasklist__edit"></i></span><span><i class="ri-calendar-schedule-line tasklist__calender"></i></span></div>
          <div class="delete"><span class="tasklist__delete"> <i class="ri-delete-bin-6-line "></i></span></div>
 
     `;
