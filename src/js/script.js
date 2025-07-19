@@ -344,11 +344,10 @@ taskList.addEventListener("click", async (event) => {
     const fp = flatpickr(dateInput, {
       defaultDate: "today",
       dateFormat: "Y-m-d",
-      onClose: () => {
-        instance.input.remove();
-      },
+      disableMobile: true,
       onChange: () => {
-        instance.input.remove();
+        fp.destroy();
+        fp.input.remove();
       },
     });
 
