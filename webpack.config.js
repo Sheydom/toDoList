@@ -87,5 +87,11 @@ export default {
     port: 3000, // You can change the port if needed
     open: true, // Auto-open in your browser
     hot: true, // Enable hot reloading (optional but nice)
+    client: {
+      overlay: {
+        warnings: false, // turn of overlay warnings in browser
+        errors: true, // keep console warnings
+      },
+    },
   },
 };

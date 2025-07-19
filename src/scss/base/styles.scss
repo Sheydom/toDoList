@@ -150,6 +150,7 @@ main {
       word-wrap: break-word;
       max-width: 100%;
       margin-left: 0.7rem;
+      flex-wrap: wrap;
     }
   }
   &__delete {
@@ -201,6 +202,11 @@ main {
   outline: none;
   resize: none;
   padding: 5px;
+  overflow: auto;
+  display: flex;
+}
+.calenderInput {
+  cursor: pointer;
 }
 
 .show {
@@ -209,6 +215,7 @@ main {
 .hide {
   display: none;
 }
+
 // modal css
 .modal {
   // display: none;

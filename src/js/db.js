@@ -3,9 +3,15 @@ import {
   collection,
   addDoc,
   getDocs,
+  getDoc,
   deleteDoc,
   doc,
   updateDoc,
+  setDoc,
+  serverTimestamp,
+  query,
+  orderBy,
+  Timestamp,
 } from "firebase/firestore";
 import { sendPasswordResetEmail } from "firebase/auth";
 
@@ -13,10 +19,12 @@ import { sendPasswordResetEmail } from "firebase/auth";
 export async function addTask(text, checked = false) {
   const user = auth.currentUser;
   if (!user) return;
+
   await addDoc(collection(db, "users", user.uid, "tasks"), {
     text,
     checked,
-    timestamp: new Date().toISOString(),
+    timestamp: serverTimestamp(),
+    sortTimestamp: serverTimestamp(), // delete laater maybe
   });
 }
 
@@ -25,7 +33,10 @@ export async function addTask(text, checked = false) {
 export async function loadTask() {
   const user = auth.currentUser;
   if (!user) return;
-  const snapshot = await getDocs(collection(db, "users", user.uid, "tasks"));
+
+  const tasksRef = collection(db, "users", user.uid, "tasks");
+  const q = query(tasksRef, orderBy("timestamp", "asc")); // ✅ sort oldest first
+  const snapshot = await getDocs(q);
 
   return snapshot.docs.map((doc) => ({
     id: doc.id,
@@ -77,10 +88,6 @@ export async function resetPassword(email) {
 
 //save slider value to firebase
 export async function saveSliderValueToFirebase(value) {
-  const { getAuth } = await import("firebase/auth");
-  const { getFirestore, doc, setDoc } = await import("firebase/firestore");
-  const auth = getAuth();
-  const db = getFirestore();
   const user = auth.currentUser;
   if (!user) return;
   await setDoc(
@@ -93,13 +100,11 @@ export async function saveSliderValueToFirebase(value) {
 //load slider value from firebase
 
 export async function loadSliderValueFromFirebase() {
-  const { getAuth } = await import("firebase/auth");
-  const { getFirestore, doc, getDoc } = await import("firebase/firestore");
-  const auth = getAuth();
-  const db = getFirestore();
   const user = auth.currentUser;
   if (!user) return null;
-  const docSnap = await getDoc(doc(db, "users", user.uid));
+  const docRef = doc(db, "users", user.uid); // points to the user doc
+  const docSnap = await getDoc(docRef); // ✅ correct method for single document
+
   if (docSnap.exists() && docSnap.data().sliderValue !== undefined) {
     return docSnap.data().sliderValue;
   }

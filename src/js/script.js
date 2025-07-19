@@ -3,7 +3,7 @@ import "../scss/base/styles.css"; // or .scss for webpack
 import "./firebase.js"; // Import Firebase app
 import { listenToAuthState } from "./auth_user.js";
 import { logout } from "./auth_user.js";
-import { loadSliderValueFromFirebase } from "./db.js";
+import { fixOldTimestamps, loadSliderValueFromFirebase } from "./db.js";
 import { saveSliderValueToFirebase } from "./db.js";
 
 const h2Header = document.querySelector(".h2Header");
@@ -58,9 +58,6 @@ async function initializeSlider() {
   // Update UI text
   rangeValue.innerText =
     sliderValue > 1 ? `in ${sliderValue} days` : `in ${sliderValue} day`;
-
-  // ✅ Now show the app — after value is correct
-  // document.querySelector(".app").style.visibility = "visible";
 
   warnOldest();
 }
@@ -287,8 +284,8 @@ taskList.addEventListener("click", (event) => {
     const editInputField = document.createElement("textarea");
     editInputField.classList.add("edit__input");
     editInputField.value = oldText;
-    editInputField.style.width = `${oldParagraph.offsetWidth}px`;
-    editInputField.style.height = `${oldParagraph.offsetHeight}px`;
+    editInputField.style.minWidth = `${oldParagraph.offsetWidth}px`;
+    editInputField.style.height = `${oldParagraph.offsetHeight}+2px`;
     oldParagraph.replaceWith(editInputField);
     editInputField.focus();
 
@@ -304,6 +301,7 @@ taskList.addEventListener("click", (event) => {
         const { updateTask } = await import("./db.js");
         await updateTask(taskId, { text: updatedText });
         await loadTasks();
+        await warnOldest();
         await counterTasks();
       } else {
         // If empty, revert to old paragraph
@@ -324,23 +322,41 @@ taskList.addEventListener("click", (event) => {
 });
 
 //add calenderDate
-taskList.addEventListener("click", (event) => {
+taskList.addEventListener("click", async (event) => {
   const calender = event.target.closest(".tasklist__calender");
   if (!calender) return;
-  console.log("calenderbutton");
-  const nextElem = calender.nextElementSibling;
 
-  if (!nextElem || !nextElem.classList.contains("calenderInput")) {
-    const dateInput = document.createElement("input");
-    dateInput.type = "date";
-    dateInput.classList.add("calenderInput", "show");
-    dateInput.addEventListener("blur", () => dateInput.classList.add("hide"));
+  let dateInput = calender.nextElementSibling;
+
+  // If input doesn't exist, create it
+  if (!dateInput || !dateInput.classList.contains("calenderInput")) {
+    dateInput = document.createElement("input");
+    dateInput.type = "text";
+    dateInput.classList.add("calenderInput");
     calender.after(dateInput);
-    dateInput.focus();
+
+    // ✅ Lazy load Flatpickr + CSS only when needed
+    const [{ default: flatpickr }, _] = await Promise.all([
+      import("flatpickr"),
+      import("flatpickr/dist/flatpickr.min.css"),
+    ]);
+
+    const fp = flatpickr(dateInput, {
+      defaultDate: "today",
+      dateFormat: "Y-m-d",
+      onClose: () => {
+        instance.input.remove();
+      },
+      onChange: () => {
+        instance.input.remove();
+      },
+    });
+
+    fp.open();
   } else {
-    nextElem.classList.remove("hide");
-    nextElem.classList.add("show");
-    nextElem.focus();
+    if (dateInput._flatpickr) {
+      dateInput._flatpickr.open();
+    }
   }
 });
 
@@ -349,6 +365,7 @@ async function deleteTask(taskID) {
   const { deleteTask } = await import("./db.js");
   await deleteTask(taskID);
   counterTasks();
+  warnOldest();
 }
 
 //event listener to delete Tasks from tasklist
@@ -397,7 +414,13 @@ async function loadTasks() {
     const newTask = document.createElement("div");
 
     const timeStamp = task.timestamp;
-    const displayDate = new Date(timeStamp).toLocaleDateString();
+    let displayDate = "";
+    if (timeStamp?.toDate) {
+      displayDate = timeStamp.toDate().toLocaleDateString();
+    } else if (typeof timeStamp === "string") {
+      displayDate = new Date(timeStamp).toLocaleDateString();
+    }
+
     // newTask.classList.add("tasklist__task");
     newTask.classList.add("tasklist__newTask");
     newTask.innerHTML = `
@@ -507,20 +530,37 @@ async function hideExample() {
 }
 
 async function warnOldest() {
-  const { loadTask } = await import("./db.js");
-  const tasks = await loadTask();
+  const { loadTask, loadSliderValueFromFirebase } = await import("./db.js");
+
+  const [tasks, sliderValue] = await Promise.all([
+    loadTask(),
+    loadSliderValueFromFirebase(),
+  ]);
+
   if (!Array.isArray(tasks) || tasks.length === 0) return;
+
   tasks.forEach((task) => {
-    const today = new Date();
-    const taskDate = new Date(task.timestamp);
-    const taskDiffTime = Math.abs(today - taskDate);
-    const taskDiffDays = Math.floor(taskDiffTime / (1000 * 60 * 60 * 24)); //floor better than ceil because it rounds up i needs to be a full day 4,1 = 4 and not 5// <-- Add this
+    let createdAt;
+
+    if (task.timestamp?.toDate) {
+      createdAt = task.timestamp.toDate(); // Firestore Timestamp
+    } else if (typeof task.timestamp === "string") {
+      createdAt = new Date(task.timestamp); // old string fallback
+    } else {
+      return; // skip this task
+    }
+
+    if (!createdAt) return;
+
+    const ageInMs = Date.now() - createdAt.getTime();
+    const ageInDays = Math.floor(ageInMs / (1000 * 60 * 60 * 24));
 
     const taskElement = document
       .querySelector(`input.tasklist__checkbox[data-id="${task.id}"]`)
       ?.closest(".tasklist__newTask")
       ?.querySelector("p");
-    if (taskDiffDays >= sliderValue) {
+
+    if (ageInDays >= sliderValue) {
       if (taskElement) {
         taskElement.classList.add("tasklist__oldestTask");
         taskElement
