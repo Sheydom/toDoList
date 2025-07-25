@@ -3,28 +3,26 @@ import {
   collection,
   addDoc,
   getDocs,
-  getDoc,
   deleteDoc,
   doc,
   updateDoc,
-  setDoc,
   serverTimestamp,
   query,
   orderBy,
-  Timestamp,
 } from "firebase/firestore";
 import { sendPasswordResetEmail } from "firebase/auth";
 
 //save a new task for current user
-export async function addTask(text, checked = false) {
+export async function addTask(tasktext, deadlineValue = null) {
   const user = auth.currentUser;
   if (!user) return;
 
   await addDoc(collection(db, "users", user.uid, "tasks"), {
-    text,
-    checked,
+    text: tasktext,
+    checked: false,
     timestamp: serverTimestamp(),
-    sortTimestamp: serverTimestamp(), // delete laater maybe
+    sortTimestamp: serverTimestamp(),
+    ...(deadlineValue && { deadline: deadlineValue }), // ✅ save as 'deadline'
   });
 }
 
@@ -84,29 +82,4 @@ export async function resetPassword(email) {
   } catch (error) {
     alert("Error: " + error.message);
   }
-}
-
-//save slider value to firebase
-export async function saveSliderValueToFirebase(value) {
-  const user = auth.currentUser;
-  if (!user) return;
-  await setDoc(
-    doc(db, "users", user.uid),
-    { sliderValue: value },
-    { merge: true }
-  );
-}
-
-//load slider value from firebase
-
-export async function loadSliderValueFromFirebase() {
-  const user = auth.currentUser;
-  if (!user) return null;
-  const docRef = doc(db, "users", user.uid); // points to the user doc
-  const docSnap = await getDoc(docRef); // ✅ correct method for single document
-
-  if (docSnap.exists() && docSnap.data().sliderValue !== undefined) {
-    return docSnap.data().sliderValue;
-  }
-  return null;
 }

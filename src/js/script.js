@@ -3,8 +3,7 @@ import "../scss/base/styles.css"; // or .scss for webpack
 import "./firebase.js"; // Import Firebase app
 import { listenToAuthState } from "./auth_user.js";
 import { logout } from "./auth_user.js";
-import { fixOldTimestamps, loadSliderValueFromFirebase } from "./db.js";
-import { saveSliderValueToFirebase } from "./db.js";
+import { Timestamp } from "firebase/firestore";
 
 const h2Header = document.querySelector(".h2Header");
 const modal = document.querySelector(".modal");
@@ -32,35 +31,14 @@ const taskList = document.querySelector(".tasklist");
 const clearAllButton = document.querySelector(".clearAll__button");
 const statusCounter = document.querySelector(".status__counter");
 const example = document.querySelector(".tasklist__task");
-const slider = document.querySelector(".reminderSlider__sliderInput");
-const rangeValue = document.querySelector(".rangeValue");
-let sliderValue = parseInt(slider.value, 10);
 
 document.addEventListener("DOMContentLoaded", async () => {
-  await initializeSlider();
   await loadTasks();
   counterTasks();
   hideExample();
   warnOldest();
-  // setInterval(warnOldest, 1000); // test slider value in seconds
   setInterval(warnOldest, 1000 * 60 * 60 * 12); // Check every 12 hours
 });
-
-async function initializeSlider() {
-  const savedValue = await loadSliderValueFromFirebase();
-
-  // Pick Firebase value or safe fallback
-  sliderValue = savedValue !== null ? parseInt(savedValue, 10) : 3;
-
-  // Set the slider's value before it's visible
-  slider.value = sliderValue;
-
-  // Update UI text
-  rangeValue.innerText =
-    sliderValue > 1 ? `in ${sliderValue} days` : `in ${sliderValue} day`;
-
-  warnOldest();
-}
 
 //reset password ui
 resetButton.addEventListener("click", () => {
@@ -100,9 +78,11 @@ logoutButton.addEventListener("click", async () => {
 });
 
 // login status check
+// login status check
 listenToAuthState(async (user) => {
   if (user) {
     // ✅ User is logged in
+    console.log("✅ Logged in as:", user.uid);
     modal.classList.add("hidden");
     welcome.innerText = user.displayName ? `${user.displayName}'s` : "";
     message.classList.add("hidden");
@@ -110,11 +90,18 @@ listenToAuthState(async (user) => {
     reset.classList.add("hidden");
     reset.setAttribute("type", "button");
     passwordInput.required = true;
-    await loadTasks();
-    await initializeSlider();
-    hideExample();
-    counterTasks();
-    warnOldest();
+
+    // Load tasks and initialize UI features
+    try {
+      await loadTasks();
+
+      hideExample();
+      counterTasks();
+      warnOldest();
+    } catch (err) {
+      console.error("❌ Initialization failed:", err.message);
+    }
+
     document.querySelector(".app").style.visibility = "visible";
   } else {
     // ❌ User is logged out
@@ -195,9 +182,6 @@ loginForm.addEventListener("submit", async (e) => {
       const userCredential = await createUser(email, password, name);
       const user = userCredential.user;
       nameDiv.classList.remove("hidden");
-      sliderValue = parseInt(slider.value, 10);
-      rangeValue.innerText =
-        sliderValue > 1 ? `in ${sliderValue} days` : `in ${sliderValue} day`;
       welcome.innerText = user.displayName
         ? `${user.displayName}'s`
         : "Welcome";
@@ -239,14 +223,6 @@ switchCreateButton.addEventListener("click", () => {
   passDiv.classList.remove("hidden");
 });
 
-slider.addEventListener("input", () => {
-  sliderValue = parseInt(slider.value, 10);
-  rangeValue.innerText =
-    sliderValue > 1 ? `in ${sliderValue} days` : `in ${sliderValue} day`;
-  warnOldest();
-  saveSliderValueToFirebase(sliderValue);
-});
-
 // function to add tasks
 async function addTask() {
   const taskText = taskInput.value.trim();
@@ -255,7 +231,14 @@ async function addTask() {
     return;
   }
 
-  await saveTaskToFirestore(taskText);
+  const deadlineInputs = document.querySelectorAll(".calenderInput");
+  let deadlineValue = null;
+  if (deadlineInputs.length > 0) {
+    const value = deadlineInputs[0].value;
+    if (value) deadlineValue = new Date(value);
+  }
+
+  await saveTaskToFirestore(taskText, deadlineValue);
   taskInput.value = "";
   await loadTasks();
   counterTasks();
@@ -324,6 +307,7 @@ taskList.addEventListener("click", (event) => {
 //add calenderDate
 taskList.addEventListener("click", async (event) => {
   const calender = event.target.closest(".tasklist__calender");
+  console.log("test1");
   if (!calender) return;
 
   let dateInput = calender.nextElementSibling;
@@ -339,14 +323,32 @@ taskList.addEventListener("click", async (event) => {
     const [{ default: flatpickr }, _] = await Promise.all([
       import("flatpickr"),
       import("flatpickr/dist/flatpickr.min.css"),
+      console.log("test2"),
     ]);
 
     const fp = flatpickr(dateInput, {
       defaultDate: "today",
-      dateFormat: "Y-m-d",
+      dateFormat: "d/m/Y", // ✅ shows 25/07/2025
       disableMobile: true,
-      onChange: () => {
-        fp.destroy();
+
+      onChange: async (selectedDates) => {
+        const selectedDate = selectedDates[0];
+
+        const taskElement = calender.closest(".tasklist__newTask");
+        const taskID = taskElement?.querySelector(".tasklist__checkbox")
+          ?.dataset.id;
+
+        if (taskID && selectedDate) {
+          const { updateTask } = await import("./db.js");
+          await updateTask(taskID, { deadline: selectedDate });
+
+          await loadTasks();
+          await warnOldest();
+        }
+      },
+
+      onClose: () => {
+        // fp.destroy();
         fp.input.remove();
       },
     });
@@ -379,9 +381,9 @@ taskList.addEventListener("click", (event) => {
 });
 
 // save tasks to firebase
-async function saveTaskToFirestore(taskText) {
+async function saveTaskToFirestore(taskText, deadlineValue) {
   const { addTask } = await import("./db.js");
-  await addTask(taskText); // oas the taskt text
+  await addTask(taskText, deadlineValue); // oas the taskt text
 }
 
 // update checked status
@@ -409,29 +411,93 @@ async function loadTasks() {
 
   // clear task list before adding new one
   taskList.innerHTML = "";
+
   tasks.forEach((task) => {
     const newTask = document.createElement("div");
-
-    const timeStamp = task.timestamp;
-    let displayDate = "";
-    if (timeStamp?.toDate) {
-      displayDate = timeStamp.toDate().toLocaleDateString();
-    } else if (typeof timeStamp === "string") {
-      displayDate = new Date(timeStamp).toLocaleDateString();
+    let creationDate = "";
+    if (task.timestamp?.toDate) {
+      creationDate = new Intl.DateTimeFormat("en-AU").format(
+        task.timestamp.toDate()
+      );
+    } else if (typeof task.timestamp === "string") {
+      creationDate = new Intl.DateTimeFormat("en-AU").format(
+        new Date(task.timestamp)
+      );
     }
 
-    // newTask.classList.add("tasklist__task");
+    // Only handle the deadline date now
+    let deadlineDisplay = "";
+
+    if (task.deadline?.toDate) {
+      const dateObj = task.deadline.toDate();
+
+      const options = { day: "2-digit", month: "short" };
+      const formattedDate = new Intl.DateTimeFormat("en-AU", options).format(
+        dateObj
+      );
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      dateObj.setHours(0, 0, 0, 0);
+
+      const oneDay = 1000 * 60 * 60 * 24;
+      const diff = Math.ceil((dateObj - today) / oneDay);
+
+      if (diff > 0) {
+        deadlineDisplay = `${diff} day${diff === 1 ? "" : "s"}<br> to ${formattedDate}`;
+      } else if (diff === 0) {
+        deadlineDisplay = `Today (${formattedDate})`;
+      } else {
+        deadlineDisplay = `Overdue <br> by ${Math.abs(diff)} day${Math.abs(diff) === 1 ? "" : "s"}`;
+      }
+    } else if (typeof task.deadline === "string") {
+      const dateObj = new Date(task.deadline);
+      const options = { day: "2-digit", month: "short" };
+      const formattedDate = new Intl.DateTimeFormat("en-AU", options).format(
+        dateObj
+      );
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      dateObj.setHours(0, 0, 0, 0);
+
+      const oneDay = 1000 * 60 * 60 * 24;
+      const diff = Math.ceil((dateObj - today) / oneDay);
+
+      if (diff > 0) {
+        deadlineDisplay = `${diff} day${diff === 1 ? "" : "s"}<br> to ${formattedDate}`;
+      } else if (diff === 0) {
+        deadlineDisplay = `Today (${formattedDate})`;
+      } else {
+        deadlineDisplay = `Overdue <br> by ${Math.abs(diff)} day${Math.abs(diff) === 1 ? "" : "s"}`;
+      }
+    }
+
     newTask.classList.add("tasklist__newTask");
+
     newTask.innerHTML = `
   <div class="tasklist__all">
     <input data-id="${task.id}" type="checkbox" name="task" class="tasklist__checkbox" ${task.checked ? "checked" : ""} />
     <p>${task.text}</p>
-    
-    <span ><span class="tasklist__timestamp">${displayDate}</span><i class="ri-edit-2-line tasklist__edit"></i></span><span><i class="ri-calendar-schedule-line tasklist__calender"></i></span></div>
-         <div class="delete"><span class="tasklist__delete"> <i class="ri-delete-bin-6-line "></i></span></div>
+    <span class="tasklist__deadlineDays">
+      <i class="ri-edit-2-line tasklist__edit" title="Edit task text"></i>
+      <span class="tasklist__deadline">created: <br> ${creationDate}</span>
+    </span>
+    <span class="tasklist__deadlineDays">
+      
+      <i class="ri-calendar-schedule-line tasklist__calender" title="Set deadline"></i>
+            <span class="tasklist__deadline">${deadlineDisplay}</span>
+    </span>
+    </div>
+    <div class="delete">
+    <span class="tasklist__delete" title="Delete task">
+      <i class="ri-delete-bin-6-line"></i>
+    </span>
+  </div>
+`;
 
-    `;
     taskList.appendChild(newTask);
+    warnOldest();
   });
 }
 // clear all tasks function
@@ -529,43 +595,37 @@ async function hideExample() {
 }
 
 async function warnOldest() {
-  const { loadTask, loadSliderValueFromFirebase } = await import("./db.js");
-
-  const [tasks, sliderValue] = await Promise.all([
-    loadTask(),
-    loadSliderValueFromFirebase(),
-  ]);
+  const { loadTask } = await import("./db.js");
+  const tasks = await loadTask();
 
   if (!Array.isArray(tasks) || tasks.length === 0) return;
 
-  tasks.forEach((task) => {
-    let createdAt;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // ignore time, compare only date
 
-    if (task.timestamp?.toDate) {
-      createdAt = task.timestamp.toDate(); // Firestore Timestamp
-    } else if (typeof task.timestamp === "string") {
-      createdAt = new Date(task.timestamp); // old string fallback
+  tasks.forEach((task) => {
+    let deadlineDate;
+
+    if (task.deadline?.toDate) {
+      deadlineDate = task.deadline.toDate(); // ✅ convert from Firestore Timestamp
+    } else if (typeof task.deadline === "string") {
+      deadlineDate = new Date(task.deadline);
     } else {
-      return; // skip this task
+      return; // skip if no deadline
     }
 
-    if (!createdAt) return;
-
-    const ageInMs = Date.now() - createdAt.getTime();
-    const ageInDays = Math.floor(ageInMs / (1000 * 60 * 60 * 24));
+    deadlineDate.setHours(0, 0, 0, 0);
 
     const taskElement = document
       .querySelector(`input.tasklist__checkbox[data-id="${task.id}"]`)
       ?.closest(".tasklist__newTask")
       ?.querySelector("p");
 
-    if (ageInDays >= sliderValue) {
-      if (taskElement) {
-        taskElement.classList.add("tasklist__oldestTask");
-        taskElement
-          .closest(".tasklist__all")
-          .classList.add("tasklist__oldestTask");
-      }
+    if (deadlineDate <= today && taskElement) {
+      taskElement.classList.add("tasklist__oldestTask");
+      taskElement
+        .closest(".tasklist__all")
+        .classList.add("tasklist__oldestTask");
     } else if (taskElement) {
       taskElement.classList.remove("tasklist__oldestTask");
       taskElement

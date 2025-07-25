@@ -138,7 +138,7 @@ main {
   padding: 10px;
   border-radius: 15px;
   overflow: hidden;
-  max-width: 600px;
+  max-width: fit-content;
 }
 .tasklist__all p {
   word-wrap: break-word;
@@ -164,7 +164,7 @@ main {
   cursor: pointer;
   border: 2px solid black;
 }
-.tasklist__timestamp {
+.tasklist__deadline {
   position: relative;
   font-size: 0.6rem !important;
   margin-left: 1rem;
@@ -183,6 +183,11 @@ main {
 .tasklist__checked {
   color: white !important;
 }
+.tasklist__deadlineDays {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 .edit__input {
   border-color: #7c8afc;
@@ -196,6 +201,8 @@ main {
 
 .calenderInput {
   cursor: pointer;
+  text-align: center;
+  max-width: 100px;
 }
 
 .show {
