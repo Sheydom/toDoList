@@ -82,7 +82,7 @@ logoutButton.addEventListener("click", async () => {
 listenToAuthState(async (user) => {
   if (user) {
     // ✅ User is logged in
-    console.log("✅ Logged in as:", user.uid);
+
     modal.classList.add("hidden");
     welcome.innerText = user.displayName ? `${user.displayName}'s` : "";
     message.classList.add("hidden");
@@ -307,7 +307,7 @@ taskList.addEventListener("click", (event) => {
 //add calenderDate
 taskList.addEventListener("click", async (event) => {
   const calender = event.target.closest(".tasklist__calender");
-  console.log("test1");
+
   if (!calender) return;
 
   let dateInput = calender.nextElementSibling;
@@ -323,7 +323,6 @@ taskList.addEventListener("click", async (event) => {
     const [{ default: flatpickr }, _] = await Promise.all([
       import("flatpickr"),
       import("flatpickr/dist/flatpickr.min.css"),
-      console.log("test2"),
     ]);
 
     const fp = flatpickr(dateInput, {
