@@ -27,6 +27,8 @@ const main = document.querySelector("main");
 const addButton = document.querySelector(".addTask__button");
 const taskInput = document.querySelector(".addTask__input");
 const taskList = document.querySelector(".tasklist");
+const warnSlider = document.querySelector(".reminderSlider__sliderInput");
+const warnDaysLabel = document.querySelector(".rangeValue");
 
 const clearAllButton = document.querySelector(".clearAll__button");
 const statusCounter = document.querySelector(".status__counter");
@@ -34,10 +36,10 @@ const example = document.querySelector(".tasklist__task");
 
 document.addEventListener("DOMContentLoaded", async () => {
   await loadTasks();
+
   counterTasks();
   hideExample();
-  warnOldest();
-  setInterval(warnOldest, 1000 * 60 * 60 * 12); // Check every 12 hours
+  setInterval(loadTasks, 1000 * 60 * 60 * 12); // Check every 12 hours
 });
 
 //reset password ui
@@ -78,7 +80,6 @@ logoutButton.addEventListener("click", async () => {
 });
 
 // login status check
-// login status check
 listenToAuthState(async (user) => {
   if (user) {
     // ✅ User is logged in
@@ -97,7 +98,6 @@ listenToAuthState(async (user) => {
 
       hideExample();
       counterTasks();
-      warnOldest();
     } catch (err) {
       console.error("❌ Initialization failed:", err.message);
     }
@@ -284,7 +284,7 @@ taskList.addEventListener("click", (event) => {
         const { updateTask } = await import("./db.js");
         await updateTask(taskId, { text: updatedText });
         await loadTasks();
-        await warnOldest();
+
         await counterTasks();
       } else {
         // If empty, revert to old paragraph
@@ -340,9 +340,7 @@ taskList.addEventListener("click", async (event) => {
         if (taskID && selectedDate) {
           const { updateTask } = await import("./db.js");
           await updateTask(taskID, { deadline: selectedDate });
-
           await loadTasks();
-          await warnOldest();
         }
       },
 
@@ -365,7 +363,6 @@ async function deleteTask(taskID) {
   const { deleteTask } = await import("./db.js");
   await deleteTask(taskID);
   counterTasks();
-  warnOldest();
 }
 
 //event listener to delete Tasks from tasklist
@@ -398,7 +395,6 @@ taskList.addEventListener("change", (event) => {
     const taskID = task.querySelector(".tasklist__checkbox").dataset.id;
     updateCheckedStatus(taskID, event.target.checked);
     counterTasks();
-    warnOldest();
   }
 });
 
@@ -408,11 +404,14 @@ async function loadTasks() {
   const tasks = await loadTask();
   if (!Array.isArray(tasks)) return;
 
-  // clear task list before adding new one
   taskList.innerHTML = "";
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // normalize
 
   tasks.forEach((task) => {
     const newTask = document.createElement("div");
+
+    // ✅ Creation Date
     let creationDate = "";
     if (task.timestamp?.toDate) {
       creationDate = new Intl.DateTimeFormat("en-AU").format(
@@ -424,81 +423,59 @@ async function loadTasks() {
       );
     }
 
-    // Only handle the deadline date now
+    // ✅ Deadline Calculation
     let deadlineDisplay = "";
+    let isOverdue = false;
 
-    if (task.deadline?.toDate) {
-      const dateObj = task.deadline.toDate();
-
+    if (task.deadline) {
+      const dateObj = task.deadline.toDate
+        ? task.deadline.toDate()
+        : new Date(task.deadline);
       const options = { day: "2-digit", month: "short" };
       const formattedDate = new Intl.DateTimeFormat("en-AU", options).format(
         dateObj
       );
 
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
       dateObj.setHours(0, 0, 0, 0);
-
       const oneDay = 1000 * 60 * 60 * 24;
       const diff = Math.ceil((dateObj - today) / oneDay);
 
       if (diff > 0) {
-        deadlineDisplay = `${diff} day${diff === 1 ? "" : "s"}<br> to ${formattedDate}`;
+        deadlineDisplay = `${diff} day${diff === 1 ? "" : "s"} <br> to ${formattedDate}`;
       } else if (diff === 0) {
         deadlineDisplay = `Today (${formattedDate})`;
       } else {
-        deadlineDisplay = `Overdue <br> by ${Math.abs(diff)} day${Math.abs(diff) === 1 ? "" : "s"}`;
-      }
-    } else if (typeof task.deadline === "string") {
-      const dateObj = new Date(task.deadline);
-      const options = { day: "2-digit", month: "short" };
-      const formattedDate = new Intl.DateTimeFormat("en-AU", options).format(
-        dateObj
-      );
-
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      dateObj.setHours(0, 0, 0, 0);
-
-      const oneDay = 1000 * 60 * 60 * 24;
-      const diff = Math.ceil((dateObj - today) / oneDay);
-
-      if (diff > 0) {
-        deadlineDisplay = `${diff} day${diff === 1 ? "" : "s"}<br> to ${formattedDate}`;
-      } else if (diff === 0) {
-        deadlineDisplay = `Today (${formattedDate})`;
-      } else {
-        deadlineDisplay = `Overdue <br> by ${Math.abs(diff)} day${Math.abs(diff) === 1 ? "" : "s"}`;
+        deadlineDisplay = `Overdue by <br> ${Math.abs(diff)} day${Math.abs(diff) === 1 ? "" : "s"}`;
+        isOverdue = true;
       }
     }
 
+    // ✅ Render
     newTask.classList.add("tasklist__newTask");
-
     newTask.innerHTML = `
-  <div class="tasklist__all">
-    <input data-id="${task.id}" type="checkbox" name="task" class="tasklist__checkbox" ${task.checked ? "checked" : ""} />
-    <p>${task.text}</p>
-    <span class="tasklist__deadlineDays">
-      <i class="ri-edit-2-line tasklist__edit" title="Edit task text"></i>
-      <span class="tasklist__deadline">created: <br> ${creationDate}</span>
-    </span>
-    <span class="tasklist__deadlineDays">
-      
-      <i class="ri-calendar-schedule-line tasklist__calender" title="Set deadline"></i>
-            <span class="tasklist__deadline">${deadlineDisplay}</span>
-    </span>
-    </div>
-    <div class="delete">
-    <span class="tasklist__delete" title="Delete task">
-      <i class="ri-delete-bin-6-line"></i>
-    </span>
-  </div>
-`;
+      <div class="tasklist__all ${isOverdue ? "tasklist__oldestTask" : ""}">
+        <input data-id="${task.id}" type="checkbox" name="task" class="tasklist__checkbox" ${task.checked ? "checked" : ""} />
+        <p class="${isOverdue ? "tasklist__oldestTask" : ""}">${task.text}</p>
+        <span class="tasklist__deadlineDays">
+          <i class="ri-edit-2-line tasklist__edit" title="Edit task text"></i>
+          <span class="tasklist__deadline">created: <br> ${creationDate}</span>
+        </span>
+        <span class="tasklist__deadlineDays">
+          <i class="ri-calendar-schedule-line tasklist__calender" title="Set deadline"></i>
+          <span class="tasklist__deadline">${deadlineDisplay}</span>
+        </span>
+      </div>
+      <div class="delete">
+        <span class="tasklist__delete" title="Delete task">
+          <i class="ri-delete-bin-6-line"></i>
+        </span>
+      </div>
+    `;
 
     taskList.appendChild(newTask);
-    warnOldest();
   });
 }
+
 // clear all tasks function
 async function clearAllTasks() {
   const { clearTasks } = await import("./db.js");
@@ -591,45 +568,4 @@ async function hideExample() {
   } else {
     example.classList.remove("show");
   }
-}
-
-async function warnOldest() {
-  const { loadTask } = await import("./db.js");
-  const tasks = await loadTask();
-
-  if (!Array.isArray(tasks) || tasks.length === 0) return;
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // ignore time, compare only date
-
-  tasks.forEach((task) => {
-    let deadlineDate;
-
-    if (task.deadline?.toDate) {
-      deadlineDate = task.deadline.toDate(); // ✅ convert from Firestore Timestamp
-    } else if (typeof task.deadline === "string") {
-      deadlineDate = new Date(task.deadline);
-    } else {
-      return; // skip if no deadline
-    }
-
-    deadlineDate.setHours(0, 0, 0, 0);
-
-    const taskElement = document
-      .querySelector(`input.tasklist__checkbox[data-id="${task.id}"]`)
-      ?.closest(".tasklist__newTask")
-      ?.querySelector("p");
-
-    if (deadlineDate <= today && taskElement) {
-      taskElement.classList.add("tasklist__oldestTask");
-      taskElement
-        .closest(".tasklist__all")
-        .classList.add("tasklist__oldestTask");
-    } else if (taskElement) {
-      taskElement.classList.remove("tasklist__oldestTask");
-      taskElement
-        .closest(".tasklist__all")
-        ?.classList.remove("tasklist__oldestTask");
-    }
-  });
 }
