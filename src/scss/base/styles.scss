@@ -31,6 +31,12 @@ main {
   box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
 }
 
+@media (max-width: 768px) {
+  main {
+    max-width: 300px;
+  }
+}
+
 .status {
   border: 3px solid #7c8afc;
   border-radius: 25px;
@@ -133,18 +139,20 @@ main {
     position: relative;
     align-items: center;
     gap: 15px;
+    justify-content: space-between;
   }
   &__all {
     position: relative;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     border: solid 2px black;
     background-color: #2e345c;
     padding: 10px;
     border-radius: 15px;
     overflow: hidden;
-    max-width: fit-content;
+    // max-width: fit-content;
+    width: 100%;
 
     p {
       word-wrap: break-word;
@@ -175,15 +183,20 @@ main {
   }
   &__deadline {
     position: relative;
-    // top: 10px;
-    // right: -15px;
     font-size: 0.6rem !important;
     margin-left: 1rem;
     color: white;
+    min-width: 25px;
+    margin-right: 5px;
   }
   &__oldestTask {
     color: red;
     border-color: red;
+    border-width: 2px;
+  }
+  &__todayTask {
+    color: orange;
+    border-color: orange;
     border-width: 2px;
   }
   &__checkedTask {
@@ -196,7 +209,15 @@ main {
   }
   &__deadlineDays {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+  }
+  &__optionsDiv {
+    display: flex;
+    flex-direction: row;
+    margin-left: 20px;
+  }
+  &__optionsDiv1 {
+    display: flex;
     align-items: center;
   }
 }
@@ -387,4 +408,10 @@ main {
   display: flex;
   justify-content: flex-end;
   margin-top: 20px;
+}
+@media (max-width: 500px) {
+  .flatpickr-calendar {
+    transform: scale(0.85);
+    font-size: 14px;
+  }
 }

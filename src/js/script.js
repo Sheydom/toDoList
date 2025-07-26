@@ -27,8 +27,6 @@ const main = document.querySelector("main");
 const addButton = document.querySelector(".addTask__button");
 const taskInput = document.querySelector(".addTask__input");
 const taskList = document.querySelector(".tasklist");
-const warnSlider = document.querySelector(".reminderSlider__sliderInput");
-const warnDaysLabel = document.querySelector(".rangeValue");
 
 const clearAllButton = document.querySelector(".clearAll__button");
 const statusCounter = document.querySelector(".status__counter");
@@ -329,7 +327,7 @@ taskList.addEventListener("click", async (event) => {
       defaultDate: "today",
       dateFormat: "d/m/Y", // ✅ shows 25/07/2025
       disableMobile: true,
-
+      position: "auto center",
       onChange: async (selectedDates) => {
         const selectedDate = selectedDates[0];
 
@@ -403,7 +401,6 @@ async function loadTasks() {
   const { loadTask } = await import("./db.js");
   const tasks = await loadTask();
   if (!Array.isArray(tasks)) return;
-
   taskList.innerHTML = "";
   const today = new Date();
   today.setHours(0, 0, 0, 0); // normalize
@@ -424,8 +421,9 @@ async function loadTasks() {
     }
 
     // ✅ Deadline Calculation
-    let deadlineDisplay = "";
+    let deadlineDisplay = "No due Date";
     let isOverdue = false;
+    let isToday = false;
 
     if (task.deadline) {
       const dateObj = task.deadline.toDate
@@ -440,30 +438,37 @@ async function loadTasks() {
       const oneDay = 1000 * 60 * 60 * 24;
       const diff = Math.ceil((dateObj - today) / oneDay);
 
-      if (diff > 0) {
-        deadlineDisplay = `${diff} day${diff === 1 ? "" : "s"} <br> to ${formattedDate}`;
+      if (diff >= 2) {
+        deadlineDisplay = `Due in ${diff} day${diff === 1 ? "" : "s"} <br> ${formattedDate}`;
+      } else if (diff === 1) {
+        deadlineDisplay = `Due Tomorrow <br>  ${formattedDate}`;
       } else if (diff === 0) {
-        deadlineDisplay = `Today (${formattedDate})`;
+        deadlineDisplay = `Due Today <br> ${formattedDate}`;
+        isToday = true;
       } else {
         deadlineDisplay = `Overdue by <br> ${Math.abs(diff)} day${Math.abs(diff) === 1 ? "" : "s"}`;
         isOverdue = true;
+        isToday = false;
       }
     }
 
     // ✅ Render
     newTask.classList.add("tasklist__newTask");
     newTask.innerHTML = `
-      <div class="tasklist__all ${isOverdue ? "tasklist__oldestTask" : ""}">
+      <div class="tasklist__all ${isOverdue ? "tasklist__oldestTask" : ""}${isToday ? "tasklist__todayTask" : ""}">
+
+      <div class="tasklist__optionsDiv1">
         <input data-id="${task.id}" type="checkbox" name="task" class="tasklist__checkbox" ${task.checked ? "checked" : ""} />
         <p class="${isOverdue ? "tasklist__oldestTask" : ""}">${task.text}</p>
+        </div>
+       <div class="tasklist__optionsDiv">
         <span class="tasklist__deadlineDays">
           <i class="ri-edit-2-line tasklist__edit" title="Edit task text"></i>
-          <span class="tasklist__deadline">created: <br> ${creationDate}</span>
+                    <i class="ri-calendar-schedule-line tasklist__calender" title="Set deadline"></i>
+                    
         </span>
-        <span class="tasklist__deadlineDays">
-          <i class="ri-calendar-schedule-line tasklist__calender" title="Set deadline"></i>
           <span class="tasklist__deadline">${deadlineDisplay}</span>
-        </span>
+        </div>
       </div>
       <div class="delete">
         <span class="tasklist__delete" title="Delete task">
