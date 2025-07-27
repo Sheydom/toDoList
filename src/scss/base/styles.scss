@@ -409,9 +409,3 @@ main {
   justify-content: flex-end;
   margin-top: 20px;
 }
-@media (max-width: 500px) {
-  .flatpickr-calendar {
-    transform: scale(0.85);
-    font-size: 14px;
-  }
-}

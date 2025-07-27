@@ -1,6 +1,8 @@
 import { db, auth } from "./firebase.js";
 import {
   collection,
+  setDoc,
+  getDoc,
   addDoc,
   getDocs,
   deleteDoc,
@@ -24,6 +26,22 @@ export async function addTask(tasktext, deadlineValue = null) {
     sortTimestamp: serverTimestamp(),
     ...(deadlineValue && { deadline: deadlineValue }), // ✅ save as 'deadline'
   });
+}
+
+//save email to firestore db
+
+export async function saveEmail() {
+  const user = auth.currentUser;
+  if (!user) return;
+  const email = user.email;
+
+  const userRef = doc(db, "users", user.uid);
+  const snap = await getDoc(userRef);
+  //snap like  screenshot to check if data contains email or not or data at all
+  if (!snap.exists() || !snap.data().email) {
+    await setDoc(userRef, { email }, { merge: true });
+  }
+  //merge keeps other fields save
 }
 
 //load tasks from firestore db
@@ -83,4 +101,3 @@ export async function resetPassword(email) {
     alert("Error: " + error.message);
   }
 }
-

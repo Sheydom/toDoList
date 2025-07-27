@@ -3,7 +3,6 @@ import "../scss/base/styles.css"; // or .scss for webpack
 import "./firebase.js"; // Import Firebase app
 import { listenToAuthState } from "./auth_user.js";
 import { logout } from "./auth_user.js";
-import { Timestamp } from "firebase/firestore";
 
 const h2Header = document.querySelector(".h2Header");
 const modal = document.querySelector(".modal");
@@ -93,9 +92,10 @@ listenToAuthState(async (user) => {
     // Load tasks and initialize UI features
     try {
       await loadTasks();
-
       hideExample();
       counterTasks();
+      const { saveEmail } = await import("./db.js");
+      saveEmail();
     } catch (err) {
       console.error("❌ Initialization failed:", err.message);
     }
