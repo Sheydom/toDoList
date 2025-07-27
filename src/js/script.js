@@ -3,6 +3,8 @@ import "../scss/base/styles.css"; // or .scss for webpack
 import "./firebase.js"; // Import Firebase app
 import { listenToAuthState } from "./auth_user.js";
 import { logout } from "./auth_user.js";
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
 
 const h2Header = document.querySelector(".h2Header");
 const modal = document.querySelector(".modal");
@@ -314,14 +316,14 @@ taskList.addEventListener("click", async (event) => {
   if (!dateInput || !dateInput.classList.contains("calenderInput")) {
     dateInput = document.createElement("input");
     dateInput.type = "text";
-    dateInput.classList.add("calenderInput");
+    dateInput.classList.add("calenderInput", "hideCalenderInput");
     calender.after(dateInput);
 
-    // ✅ Lazy load Flatpickr + CSS only when needed
-    const [{ default: flatpickr }, _] = await Promise.all([
-      import("flatpickr"),
-      import("flatpickr/dist/flatpickr.min.css"),
-    ]);
+    // // ✅ Lazy load Flatpickr + CSS only when needed
+    // const [{ default: flatpickr }, _] = await Promise.all([
+    //   import("flatpickr"),
+    //   import("flatpickr/dist/flatpickr.min.css"),
+    // ]);
 
     const fp = flatpickr(dateInput, {
       defaultDate: "today",

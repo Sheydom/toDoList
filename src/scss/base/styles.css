@@ -234,6 +234,14 @@ main {
   display: none;
 }
 
+.hideCalenderInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  height: 0;
+  margin: 0;
+}
+
 .modal {
   display: flex;
   position: fixed;
