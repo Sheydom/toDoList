@@ -209,9 +209,18 @@ main {
   display: flex;
   align-items: center;
 }
+.tasklist__deadline {
+  border: 1px solid transparent;
+  padding: 5px;
+}
 
-.tasklist__deadline:hover {
+.tasklist__deadline:hover,
+.delete:hover,
+.tasklist__edit:hover,
+.tasklist__calender:hover {
   cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0px 0px 15px blueviolet;
 }
 
 .edit__input {
