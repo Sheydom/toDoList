@@ -210,6 +210,10 @@ main {
   align-items: center;
 }
 
+.tasklist__deadline:hover {
+  cursor: pointer;
+}
+
 .edit__input {
   border-color: #7c8afc;
   border-radius: 5px;

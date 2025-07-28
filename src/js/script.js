@@ -305,19 +305,31 @@ taskList.addEventListener("click", (event) => {
 });
 
 //add calenderDate
+
 taskList.addEventListener("click", async (event) => {
   const calender = event.target.closest(".tasklist__calender");
+  const deadlineDisplay = event.target.closest(".tasklist__deadline");
 
-  if (!calender) return;
+  if (!calender && !deadlineDisplay) return;
 
-  let dateInput = calender.nextElementSibling;
+  let calendarIcon;
+  if (calender) {
+    calendarIcon = calender;
+  } else if (deadlineDisplay) {
+    const taskElement = deadlineDisplay.closest(".tasklist__newTask");
+    calendarIcon = taskElement?.querySelector(".tasklist__calender");
+  }
+
+  if (!calendarIcon) return;
+
+  let dateInput = calendarIcon.nextElementSibling;
 
   // If input doesn't exist, create it
   if (!dateInput || !dateInput.classList.contains("calenderInput")) {
     dateInput = document.createElement("input");
     dateInput.type = "text";
     dateInput.classList.add("calenderInput", "hideCalenderInput");
-    calender.after(dateInput);
+    calendarIcon.after(dateInput);
 
     // // ✅ Lazy load Flatpickr + CSS only when needed
     // const [{ default: flatpickr }, _] = await Promise.all([
@@ -466,7 +478,7 @@ async function loadTasks() {
        <div class="tasklist__optionsDiv">
         <span class="tasklist__deadlineDays">
           <i class="ri-edit-2-line tasklist__edit" title="Edit task text"></i>
-                    <i class="ri-calendar-schedule-line tasklist__calender" title="Set deadline"></i>
+                    <i class="ri-calendar-schedule-line tasklist__calender" id="calender" title="Set deadline"></i>
                     
         </span>
           <span class="tasklist__deadline">${deadlineDisplay}</span>
