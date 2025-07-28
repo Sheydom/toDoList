@@ -227,7 +227,12 @@ switchCreateButton.addEventListener("click", () => {
 async function addTask() {
   const taskText = taskInput.value.trim();
   if (taskText === "") {
-    alert("Please enter a task.");
+    taskInput.style.border = "2px solid red";
+    taskInput.classList.add("shake");
+    setTimeout(() => {
+      taskInput.style.border = "";
+      taskInput.classList.remove("shake");
+    }, 1000);
     return;
   }
 
@@ -246,11 +251,19 @@ async function addTask() {
 
 // Eventlistener to add task to the tasklist
 addButton.addEventListener("click", addTask);
-taskInput.addEventListener("keypress", (event) => {
+taskInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter" && taskInput.value.trim() !== "") {
     addTask();
   } else if (event.key === "Enter" && taskInput.value.trim() === "") {
-    alert("Please enter a task.");
+    taskInput.style.outline = "none";
+    taskInput.style.border = "2px solid red";
+    taskInput.classList.add("shake");
+
+    setTimeout(() => {
+      taskInput.style.border = "";
+      taskInput.classList.remove("shake");
+    }, 1000);
+    return;
   }
 });
 
