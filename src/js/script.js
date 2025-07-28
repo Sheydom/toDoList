@@ -325,58 +325,51 @@ taskList.addEventListener("click", async (event) => {
 
   if (!calender && !deadlineDisplay) return;
 
-  let calendarIcon;
-  if (calender) {
-    calendarIcon = calender;
-  } else if (deadlineDisplay) {
-    const taskElement = deadlineDisplay.closest(".tasklist__newTask");
-    calendarIcon = taskElement?.querySelector(".tasklist__calender");
-  }
-
+  const taskElement = (calender || deadlineDisplay)?.closest(
+    ".tasklist__newTask"
+  );
+  const calendarIcon = taskElement?.querySelector(".tasklist__calender");
   if (!calendarIcon) return;
 
   let dateInput = calendarIcon.nextElementSibling;
 
-  // If input doesn't exist, create it
   if (!dateInput || !dateInput.classList.contains("calenderInput")) {
     dateInput = document.createElement("input");
     dateInput.type = "text";
     dateInput.classList.add("calenderInput", "hideCalenderInput");
     calendarIcon.after(dateInput);
 
-    // // ✅ Lazy load Flatpickr + CSS only when needed
-    // const [{ default: flatpickr }, _] = await Promise.all([
-    //   import("flatpickr"),
-    //   import("flatpickr/dist/flatpickr.min.css"),
-    // ]);
+    // ✅ Delay Flatpickr init to avoid SecurityError
+    setTimeout(() => {
+      const fp = flatpickr(dateInput, {
+        defaultDate: "today",
+        dateFormat: "d/m/Y",
+        disableMobile: true,
+        position: "auto center",
 
-    const fp = flatpickr(dateInput, {
-      defaultDate: "today",
-      dateFormat: "d/m/Y", // ✅ shows 25/07/2025
-      disableMobile: true,
-      position: "auto center",
-      onChange: async (selectedDates) => {
-        const selectedDate = selectedDates[0];
+        onChange: async (selectedDates) => {
+          const selectedDate = selectedDates[0];
+          const taskID = taskElement?.querySelector(".tasklist__checkbox")
+            ?.dataset.id;
 
-        const taskElement = calender.closest(".tasklist__newTask");
-        const taskID = taskElement?.querySelector(".tasklist__checkbox")
-          ?.dataset.id;
+          if (taskID && selectedDate) {
+            const { updateTask } = await import("./db.js");
+            await updateTask(taskID, { deadline: selectedDate });
+            await loadTasks();
+          }
 
-        if (taskID && selectedDate) {
-          const { updateTask } = await import("./db.js");
-          await updateTask(taskID, { deadline: selectedDate });
-          await loadTasks();
-        }
-      },
+          fp.input.remove(); // ✅ Only remove after a successful change
+        },
 
-      onClose: () => {
-        // fp.destroy();
-        fp.input.remove();
-      },
-    });
+        onClose: () => {
+          // No need to remove here anymore
+        },
+      });
 
-    fp.open();
+      fp.open();
+    }, 0);
   } else {
+    // Calendar already exists → just open it
     if (dateInput._flatpickr) {
       dateInput._flatpickr.open();
     }
